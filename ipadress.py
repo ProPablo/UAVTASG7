@@ -62,11 +62,11 @@ font = ImageFont.truetype(font_path, font_size)
 text_colour = (255, 255, 255)
 back_colour = (0, 170, 170)
 
-message = "Hello, World!"
 ip = get_ip()
+message = "IP: %s"
 logging.info("Found IP: " +ip)
 
-size_x, size_y = draw.textsize("IP: %s" % ip, font)
+size_x, size_y = draw.textsize(message, font)
 
 # Calculate text position
 x = (WIDTH - size_x) / 2
