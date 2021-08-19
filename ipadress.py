@@ -3,6 +3,7 @@ import socket
 
 import ST7735
 import os
+from time import sleep
 from PIL import Image, ImageDraw, ImageFont
 import logging
 
@@ -45,13 +46,8 @@ disp.begin()
 WIDTH = disp.width
 HEIGHT = disp.height
 
-# New canvas to draw on.
-img = Image.new('RGB', (WIDTH, HEIGHT), color=(0, 0, 0))
-draw = ImageDraw.Draw(img)
-
 # Text settings.
 font_size = 25
-
 font_path = os.path.abspath(
     os.path.join(
         os.path.dirname(__file__), 'Roboto-Thin.ttf'
@@ -65,21 +61,46 @@ back_colour = (0, 170, 170)
 ip = get_ip()
 message = "IP: %s" % ip
 logging.info("Found IP: " +ip)
+logging.info("display size: " + WIDTH, ", ", HEIGHT)
 
-size_x, size_y = draw.textsize(message, font)
+# # New canvas to draw on.
+# img = Image.new('RGB', (WIDTH, HEIGHT), color=(0, 0, 0))
+# draw = ImageDraw.Draw(img)
 
-# Calculate text position
-x = (WIDTH - size_x) / 2
-y = (HEIGHT / 2) - (size_y / 2)
+# size_x, size_y = draw.textsize(message, font)
 
-# Draw background rectangle and write text.
-draw.rectangle((0, 0, 160, 80), back_colour)
-draw.text((x, y), message, font=font, fill=text_colour)
-disp.display(img)
+# # Calculate text position
+# x = (WIDTH - size_x) / 2
+# y = (HEIGHT / 2) - (size_y / 2)
+
+# # Draw background rectangle and write text.
+# draw.rectangle((0, 0, 160, 80), back_colour)
+# draw.text((x, y), message, font=font, fill=text_colour)
+# disp.display(img)
+
+def display_message(message):
+    # New canvas to draw on.
+    img = Image.new('RGB', (WIDTH, HEIGHT), color=(0, 0, 0))
+    draw = ImageDraw.Draw(img)
+
+    size_x, size_y = draw.textsize(message, font)
+
+    # Calculate text position
+    x = (WIDTH - size_x) / 2
+    y = (HEIGHT / 2) - (size_y / 2)
+
+    # Draw background rectangle and write text.
+    draw.rectangle((0, 0, 160, 80), back_colour)
+    draw.text((x, y), message, font=font, fill=text_colour)
+    disp.display(img)
 
 # Keep running.
 try:
     while True:
+        sleep(5)
+        new_ip = get_ip()
+        if (new_ip !=ip):
+            print("stuff")
         pass
 
 # Turn off backlight on control-c
