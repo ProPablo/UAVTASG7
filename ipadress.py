@@ -61,7 +61,7 @@ back_colour = (0, 170, 170)
 ip = get_ip()
 message = "IP: %s" % ip
 logging.info("Found IP: " +ip)
-logging.info("display size: " + WIDTH, ", ", HEIGHT)
+logging.info("display size: " + str(WIDTH) + ", " + str(HEIGHT))
 
 # # New canvas to draw on.
 # img = Image.new('RGB', (WIDTH, HEIGHT), color=(0, 0, 0))
