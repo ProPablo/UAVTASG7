@@ -100,10 +100,8 @@ try:
         sleep(5)
         new_ip = get_ip()
         logging.info("New Ip: " +new_ip)
-        if (new_ip !=ip):
-            new_message = "IP: %s" % new_ip
-            display_message(new_message)
-            # print("stuff")
+        new_message = "IP: %s" % new_ip
+        display_message(new_message)
         pass
 
 # Turn off backlight on control-c
