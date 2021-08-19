@@ -99,8 +99,9 @@ try:
     while True:
         sleep(5)
         new_ip = get_ip()
+        logging.info("New Ip: " +new_ip)
         if (new_ip !=ip):
-            new_message = "IP: %s" % ip
+            new_message = "IP: %s" % new_ip
             display_message(new_message)
             # print("stuff")
         pass
