@@ -100,7 +100,9 @@ try:
         sleep(5)
         new_ip = get_ip()
         if (new_ip !=ip):
-            print("stuff")
+            new_message = "IP: %s" % ip
+            display_message(new_message)
+            # print("stuff")
         pass
 
 # Turn off backlight on control-c
