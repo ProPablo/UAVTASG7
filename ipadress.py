@@ -63,7 +63,7 @@ text_colour = (255, 255, 255)
 back_colour = (0, 170, 170)
 
 ip = get_ip()
-message = "IP: %s"
+message = "IP: %s" % ip
 logging.info("Found IP: " +ip)
 
 size_x, size_y = draw.textsize(message, font)
