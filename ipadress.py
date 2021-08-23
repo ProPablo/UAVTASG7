@@ -58,25 +58,8 @@ font = ImageFont.truetype(font_path, font_size)
 text_colour = (255, 255, 255)
 back_colour = (0, 170, 170)
 
-ip = get_ip()
-message = "IP: %s" % ip
-logging.info("Found IP: " +ip)
 logging.info("display size: " + str(WIDTH) + ", " + str(HEIGHT))
 
-# # New canvas to draw on.
-# img = Image.new('RGB', (WIDTH, HEIGHT), color=(0, 0, 0))
-# draw = ImageDraw.Draw(img)
-
-# size_x, size_y = draw.textsize(message, font)
-
-# # Calculate text position
-# x = (WIDTH - size_x) / 2
-# y = (HEIGHT / 2) - (size_y / 2)
-
-# # Draw background rectangle and write text.
-# draw.rectangle((0, 0, 160, 80), back_colour)
-# draw.text((x, y), message, font=font, fill=text_colour)
-# disp.display(img)
 
 def display_message(message):
     # New canvas to draw on.
@@ -97,11 +80,11 @@ def display_message(message):
 # Keep running.
 try:
     while True:
-        sleep(5)
         new_ip = get_ip()
         logging.info("New Ip: " +new_ip)
         new_message = "IP: %s" % new_ip
         display_message(new_message)
+        sleep(5)
         pass
 
 # Turn off backlight on control-c
