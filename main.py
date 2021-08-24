@@ -21,6 +21,10 @@ def clean_output():
 def index():
     return render_template('index.html')
 
+@app.route('/recording')
+def recording():
+    return render_template('recording.html')
+
 def gen(camera):
     while True:
         frame = camera.get_frame()

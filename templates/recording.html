@@ -27,7 +27,7 @@
     <header class="d-flex justify-content-center py-3">
       <ul class="nav nav-pills">
         <li class="nav-item"><a href="#" class="nav-link active" aria-current="page">Home</a></li>
-        <li class="nav-item"><a href="{{ url_for('recording') }}" class="nav-link">Recording</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">Features</a></li>
         <li class="nav-item"><a href="#" class="nav-link">Pricing</a></li>
         <li class="nav-item"><a href="#" class="nav-link">FAQs</a></li>
         <li class="nav-item"><a href="#" class="nav-link">About</a></li>
@@ -37,7 +37,7 @@
 
 
   <div class="px-4 py-5 my-5 text-center">
-    <!-- <img class="d-block mx-auto mb-4" src="../assets/brand/bootstrap-logo.svg" alt="" width="72" height="57"> -->
+    <img class="d-block mx-auto mb-4" src="../assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">
     <h1 class="display-5 fw-bold">UAVTASG7 Control Panel</h1>
     <div class="col-lg-6 mx-auto">
       <p class="lead mb-4">Quickly design and customize responsive mobile-first sites with Bootstrap, the world’s most
@@ -51,8 +51,37 @@
   </div>
 
 
-  <script>
+  <!-- <h1 align="center">Video Streaming Demonistration</h1> -->
+  <h1 class="title"></h1>
 
+  <img id="video" class="center" src="{{ url_for('video_feed') }}">
+
+  <button id="startRec" class="button">Start Recording</button>
+
+  <div id="recordingToast" class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body">
+        Currently Recording
+        <div class="spinner-grow text-danger" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+      <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  </div>
+
+
+
+  <script>
+    var toast = new bootstrap.Toast($("#recordingToast"), { autohide: false });
+    toast.show();
+    async function onStartRec() {
+      console.log("starting recording...");
+      $("#video").attr("src", "{{ url_for('start_recording') }}");
+
+    }
+
+    $("#startRec").on('click', onStartRec);
   </script>
 </body>
 
