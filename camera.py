@@ -5,21 +5,44 @@ face_cascade=cv2.CascadeClassifier("haarcascade_frontalface_alt2.xml")
 ds_factor=0.6
 
 class VideoCamera(object):
-    def __init__(self, record=False):
+    def __init__(self, filename="./output/cam_video.mp4", record=False, images=False):
         self.video = cv2.VideoCapture(0)
+        self.images = images
         self.record = record
+        
+        if (record):
+            success, image = self.video.read()
+            image=cv2.resize(image,None,fx=ds_factor,fy=ds_factor,interpolation=cv2.INTER_AREA)
+            height, width, channels = image.shape
+            # height = 288
+            # width = 384
+            print("%d %d" % (height, width))
+            # vid_cod = cv2.VideoWriter_fourcc(*'XVID')
+            vid_cod = cv2.VideoWriter_fourcc(*"XVID")
+            fps = 20.0
+            # videoWidth = int(self.video.get(cv2.CAP_PROP_FRAME_WIDTH))
+            # videoHeight = int(self.video.get(cv2.CAP_PROP_FRAME_HEIGHT))
+            # self.output = cv2.VideoWriter("./output/cam_video.avi", vid_cod, fps, (width,height)) 
+            self.output = cv2.VideoWriter(filename, vid_cod, fps, (width,height)) 
+
     
     def __del__(self):
+        print("submitting video")
         self.video.release()
+        if (self.record):
+            self.output.release()
     
     def get_frame(self):
         success, image = self.video.read()
+        
         image=cv2.resize(image,None,fx=ds_factor,fy=ds_factor,interpolation=cv2.INTER_AREA)
         if (self.record):
-            file_path = "./output/%d.jpg" % time.time()
-            # Writing to file is the clear bottleneck here therefore, 
-            # threading isnt going to solve that unless we use some kind of threadpool to acually save to disk
-            cv2.imwrite(file_path, image)
+            self.output.write(image)
+            if (self.images):
+                file_path = "./output/%d.jpg" % time.time()
+                # Writing to file is the clear bottleneck here therefore, 
+                # threading isnt going to solve that unless we use some kind of threadpool to acually save to disk
+                cv2.imwrite(file_path, image)
         else:
             gray=cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
             face_rects=face_cascade.detectMultiScale(gray,1.3,5)
