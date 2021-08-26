@@ -1,3 +1,4 @@
+import threading
 import cv2
 import time
 from threading import Thread
@@ -54,14 +55,29 @@ class VideoCamera(object):
         return jpeg.tobytes()
 
 class RecordingCam(Thread):
-    def __init__(self):
+    def __init__(self, filename):
         Thread.__init__(self)
-        self._stop = False
+        self._stopper = threading.Event()
         self.video = cv2.VideoCapture(0)
+        success, image = self.video.read()
+        image=cv2.resize(image,None,fx=ds_factor,fy=ds_factor,interpolation=cv2.INTER_AREA)
+        height, width, channels = image.shape
+        print("%d %d" % (height, width))
+        vid_cod = cv2.VideoWriter_fourcc(*"XVID")
+        fps = 20.0
+        self.output = cv2.VideoWriter(filename, vid_cod, fps, (width,height)) 
+
 
     def run(self):
-      while not self._stop:
-        success, image = self.video.read()
-        file_path = "./output/%d.jpg" % time.time()
-        cv2.imwrite(file_path, image)
+        while not self._stopper.is_set():
+            success, image = self.video.read()
+            image=cv2.resize(image,None,fx=ds_factor,fy=ds_factor,interpolation=cv2.INTER_AREA)
+            self.output.write(image)
+            # time.sleep(0.05) #20 fps
+            self._stopper.wait(0.1)
+        self.output.release()
+
+            
+        
+    
 

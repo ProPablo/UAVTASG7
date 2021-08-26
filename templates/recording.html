@@ -79,8 +79,8 @@
     // toast.show();
     async function onStartRec() {
       console.log("starting recording...");
-      $("#video").attr("src", "{{ url_for('start_recording') }}");
-
+      // $("#video").attr("src", "{{ url_for('start_recording') }}");
+      const res = await fetch("{{ url_for('start_recording') }}");
     }
 
     async function onStopRec() {
