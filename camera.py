@@ -13,7 +13,7 @@ class VideoCamera(object):
         
         if (record):
             success, image = self.video.read()
-            image=cv2.resize(image,None,fx=ds_factor,fy=ds_factor,interpolation=cv2.INTER_AREA)
+            # image=cv2.resize(image,None,fx=ds_factor,fy=ds_factor,interpolation=cv2.INTER_AREA)
             height, width, channels = image.shape
             # height = 288
             # width = 384
@@ -36,7 +36,7 @@ class VideoCamera(object):
     def get_frame(self):
         success, image = self.video.read()
         
-        image=cv2.resize(image,None,fx=ds_factor,fy=ds_factor,interpolation=cv2.INTER_AREA)
+        # image=cv2.resize(image,None,fx=ds_factor,fy=ds_factor,interpolation=cv2.INTER_AREA)
         if (self.record):
             self.output.write(image)
             if (self.images):
@@ -64,18 +64,24 @@ class RecordingCam(Thread):
         height, width, channels = image.shape
         print("%d %d" % (height, width))
         vid_cod = cv2.VideoWriter_fourcc(*"XVID")
-        fps = 20.0
-        self.output = cv2.VideoWriter(filename, vid_cod, fps, (width,height)) 
+        # fps = 20.0
+        self.fps = self.video.get(cv2.CAP_PROP_FPS)
+        self.output = cv2.VideoWriter(filename, vid_cod, self.fps, (width,height)) 
 
 
     def run(self):
         while not self._stopper.is_set():
             success, image = self.video.read()
             image=cv2.resize(image,None,fx=ds_factor,fy=ds_factor,interpolation=cv2.INTER_AREA)
+            self.image = image
             self.output.write(image)
             # time.sleep(0.05) #20 fps
-            self._stopper.wait(0.1)
+            self._stopper.wait(1/self.fps)
         self.output.release()
+    
+    def get_frame(self):
+        ret, jpeg = cv2.imencode('.jpg', self.image)
+        return jpeg.tobytes()
 
             
         

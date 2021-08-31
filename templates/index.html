@@ -28,9 +28,9 @@
       <ul class="nav nav-pills">
         <li class="nav-item"><a href="#" class="nav-link active" aria-current="page">Home</a></li>
         <li class="nav-item"><a href="{{ url_for('recording') }}" class="nav-link">Recording</a></li>
-        <li class="nav-item"><a href="#" class="nav-link">Pricing</a></li>
-        <li class="nav-item"><a href="#" class="nav-link">FAQs</a></li>
-        <li class="nav-item"><a href="#" class="nav-link">About</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">Image Processing</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">Air Quality</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">Settings/Restart</a></li>
       </ul>
     </header>
   </div>
@@ -40,18 +40,29 @@
     <!-- <img class="d-block mx-auto mb-4" src="../assets/brand/bootstrap-logo.svg" alt="" width="72" height="57"> -->
     <h1 class="display-5 fw-bold">UAVTASG7 Control Panel</h1>
     <div class="col-lg-6 mx-auto">
-      <p class="lead mb-4">Quickly design and customize responsive mobile-first sites with Bootstrap, the world’s most
-        popular front-end open source toolkit, featuring Sass variables and mixins, responsive grid system, extensive
-        prebuilt components, and powerful JavaScript plugins.</p>
+      <p class="lead mb-4">Control Panel for </p>
       <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
         <button type="button" class="btn btn-primary btn-lg px-4 gap-3">Primary button</button>
-        <button type="button" class="btn btn-outline-secondary btn-lg px-4">Secondary</button>
+        <form method="get" action="{{ url_for('recording') }}">
+          <button id="downlaod" type="submit" class="btn btn-outline-secondary btn-lg px-4">Start Recording</button>
+        </form>
+        <form method="get" action="{{ url_for('get_recording') }}">
+          <button id="downlaod" type="submit" class="btn btn-outline-secondary btn-lg px-4">Get Recording</button>
+        </form>
+        <button id="clear" type="button" class="btn btn-outline-secondary btn-lg px-4">Clear Recordings</button>
       </div>
     </div>
   </div>
 
 
   <script>
+
+    async function clearRecordings() {
+      const res = await fetch("{{ url_for('clean_output') }}");
+    }
+
+    $("#startRec").on('click', onStartRec);
+    $("#stopRec").on("click", onStopRec);
 
   </script>
 </body>

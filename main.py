@@ -9,7 +9,7 @@ import io
 
 app = Flask(__name__)
 is_recording = False
-output_file = "./output/cam_video.mp4"
+output_file = "output/cam_video.mp4"
 recording_thread = None
 
 @app.route('/clean_output')
@@ -20,6 +20,7 @@ def clean_output():
     file_path = os.path.join(folder, filename)
     if os.path.isfile(file_path) or os.path.islink(file_path):
         os.unlink(file_path)
+  return "done"
 
 
 @app.route('/')
@@ -33,7 +34,6 @@ def recording():
 def gen(camera):
     while True:
         frame = camera.get_frame()
-        
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
@@ -51,12 +51,12 @@ def start_recording():
                     mimetype='multipart/x-mixed-replace; boundary=frame') 
   else:
     global recording_thread, output_file
-    output_file = "./output/%d.mp4" % time.time()
-    recording_thread = RecordingCam(output_file)
-    recording_thread.start()
+    output_file = "output/%d.mp4" % time.time()
+    # recording_thread = RecordingCam(output_file)
+    # recording_thread.start()
     is_recording = True
-    return "doing"
-    return Response(gen(VideoCamera()),
+    # return "doing"
+    return Response(gen(VideoCamera(record=True, filename=output_file)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
     # return Response(gen(VideoCamera(record=True, filename=output_file)),
     #                   mimetype='multipart/x-mixed-replace; boundary=frame')  
@@ -65,7 +65,6 @@ def start_recording():
 def stop_recording():
   global output_file, is_recording
   global recording_thread
-  # recording_thread.output.release()
   recording_thread._stopper.set()
   recording_thread.join()
   # os.system('ffmpeg -framerate 10 -pattern_type glob -i "*.jpg" -vf scale=720:-1 -c:v libx264 -pix_fmt yuv420p out.mp4')
