@@ -13,17 +13,13 @@ class VideoCamera(object):
         
         if (record):
             success, image = self.video.read()
-            # image=cv2.resize(image,None,fx=ds_factor,fy=ds_factor,interpolation=cv2.INTER_AREA)
+            image=cv2.resize(image,None,fx=ds_factor,fy=ds_factor,interpolation=cv2.INTER_AREA)
             height, width, channels = image.shape
-            # height = 288
-            # width = 384
             print("%d %d" % (height, width))
-            # vid_cod = cv2.VideoWriter_fourcc(*'XVID')
             vid_cod = cv2.VideoWriter_fourcc(*"XVID")
             fps = 20.0
             # videoWidth = int(self.video.get(cv2.CAP_PROP_FRAME_WIDTH))
-            # videoHeight = int(self.video.get(cv2.CAP_PROP_FRAME_HEIGHT))
-            # self.output = cv2.VideoWriter("./output/cam_video.avi", vid_cod, fps, (width,height)) 
+            # videoHeight = int(self.video.get(cv2.CAP_PROP_FRAME_HEIGHT)) 
             self.output = cv2.VideoWriter(filename, vid_cod, fps, (width,height)) 
 
     
@@ -36,8 +32,9 @@ class VideoCamera(object):
     def get_frame(self):
         success, image = self.video.read()
         
-        # image=cv2.resize(image,None,fx=ds_factor,fy=ds_factor,interpolation=cv2.INTER_AREA)
+        image=cv2.resize(image,None,fx=ds_factor,fy=ds_factor,interpolation=cv2.INTER_AREA)
         if (self.record):
+            # May not use this for the final (parameterize)
             self.output.write(image)
             if (self.images):
                 file_path = "./output/%d.jpg" % time.time()

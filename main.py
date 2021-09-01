@@ -76,11 +76,7 @@ def stop_recording():
 @app.route('/get_recording')
 def get_recording():
   global output_file, is_recording
-  # global recording_thread
-  # recording_thread._stop = True
-  # recording_thread.join()
   # os.system('ffmpeg -framerate 10 -pattern_type glob -i "*.jpg" -vf scale=720:-1 -c:v libx264 -pix_fmt yuv420p out.mp4')
-  # clean_output()
   is_recording = False
   time.sleep(0.5)
   return send_file(output_file, as_attachment=True, mimetype="video/mp4")
