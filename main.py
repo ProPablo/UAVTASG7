@@ -1,26 +1,15 @@
 from flask import Flask, render_template, Response, send_file
+from flask_socketio import SocketIO
 # from flask.helpers import send_file
 from camera import VideoCamera, RecordingCam
 import os
 import time
 
-import zipfile
-import io
 
 app = Flask(__name__)
+socketio = SocketIO(app)
 is_recording = False
 output_file = "./output/cam_video.mp4"
-
-
-@app.route('/clean_output')
-def clean_output():
-   # Clean directory
-  folder = './output'
-  for filename in os.listdir(folder):
-    file_path = os.path.join(folder, filename)
-    if os.path.isfile(file_path) or os.path.islink(file_path):
-        os.unlink(file_path)
-
 
 @app.route('/')
 def index():
@@ -82,6 +71,19 @@ def get_recording():
   is_recording = False
   time.sleep(0.5)
   return send_file(output_file, as_attachment=True, mimetype="video/mp4")
+
+
+@app.route('/clean_output')
+def clean_output():
+   # Clean directory
+  folder = './output'
+  for filename in os.listdir(folder):
+    file_path = os.path.join(folder, filename)
+    if os.path.isfile(file_path) or os.path.islink(file_path):
+        os.unlink(file_path)
+
+
+
 
 if __name__ == '__main__':
     # clean_output()

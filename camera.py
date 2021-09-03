@@ -17,12 +17,8 @@ class VideoCamera(object):
             # height = 288
             # width = 384
             print("%d %d" % (height, width))
-            # vid_cod = cv2.VideoWriter_fourcc(*'XVID')
             vid_cod = cv2.VideoWriter_fourcc(*"XVID")
             fps = 20.0
-            # videoWidth = int(self.video.get(cv2.CAP_PROP_FRAME_WIDTH))
-            # videoHeight = int(self.video.get(cv2.CAP_PROP_FRAME_HEIGHT))
-            # self.output = cv2.VideoWriter("./output/cam_video.avi", vid_cod, fps, (width,height)) 
             self.output = cv2.VideoWriter(filename, vid_cod, fps, (width,height)) 
 
     
@@ -39,6 +35,7 @@ class VideoCamera(object):
         if (self.record):
             self.output.write(image)
             if (self.images):
+                # Only run this within a certian interval (use state based counter)
                 file_path = "./output/%d.jpg" % time.time()
                 # Writing to file is the clear bottleneck here therefore, 
                 # threading isnt going to solve that unless we use some kind of threadpool to acually save to disk
