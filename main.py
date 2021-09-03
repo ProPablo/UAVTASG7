@@ -22,7 +22,6 @@ def recording():
 def gen(camera):
     while True:
         frame = camera.get_frame()
-        
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
@@ -34,27 +33,29 @@ def video_feed():
 
 @app.route('/start_recording')
 def start_recording():
-  global is_recording, output_file
+  global is_recording
   if (is_recording):
     return Response(gen(VideoCamera()),
                     mimetype='multipart/x-mixed-replace; boundary=frame') 
   else:
-  # global recording_thread
-  # recording_thread = RecordingCam()
+    global recording_thread, output_file
+    output_file = "output/%d.mp4" % time.time()
+    # recording_thread = RecordingCam(output_file)
     # recording_thread.start()
     is_recording = True
-    output_file = "./output/%d.mp4" % time.time()
+    # return "doing"
     return Response(gen(VideoCamera(record=True, filename=output_file)),
-                      mimetype='multipart/x-mixed-replace; boundary=frame')  
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+    # return Response(gen(VideoCamera(record=True, filename=output_file)),
+    #                   mimetype='multipart/x-mixed-replace; boundary=frame')  
 
 @app.route('/stop_recording')
 def stop_recording():
   global output_file, is_recording
-  # global recording_thread
-  # recording_thread._stop = True
-  # recording_thread.join()
+  global recording_thread
+  recording_thread._stopper.set()
+  recording_thread.join()
   # os.system('ffmpeg -framerate 10 -pattern_type glob -i "*.jpg" -vf scale=720:-1 -c:v libx264 -pix_fmt yuv420p out.mp4')
-  # clean_output()
   is_recording = False
   # time.sleep(0.5)
   return "done"
@@ -63,11 +64,7 @@ def stop_recording():
 @app.route('/get_recording')
 def get_recording():
   global output_file, is_recording
-  # global recording_thread
-  # recording_thread._stop = True
-  # recording_thread.join()
   # os.system('ffmpeg -framerate 10 -pattern_type glob -i "*.jpg" -vf scale=720:-1 -c:v libx264 -pix_fmt yuv420p out.mp4')
-  # clean_output()
   is_recording = False
   time.sleep(0.5)
   return send_file(output_file, as_attachment=True, mimetype="video/mp4")
