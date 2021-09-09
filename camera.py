@@ -3,6 +3,7 @@ import cv2
 import time
 from threading import Thread
 from flask_socketio import SocketIO
+from sqlite3 import Connection, connect
 face_cascade=cv2.CascadeClassifier("haarcascade_frontalface_alt2.xml")
 ds_factor=0.6
 
@@ -22,6 +23,7 @@ class VideoCamera(object):
 class WebVisCamera(VideoCamera):
     def __init__(self, socket: SocketIO, image_interval = 5):
         self.socket = socket
+        self.db_con = connect("UAV.db")
         self.last_time = 0
         self.image_interval = image_interval
         super().__init__()
@@ -35,11 +37,14 @@ class WebVisCamera(VideoCamera):
             break
         
         if (time.time()- self.last_time > self.image_interval):
-            file_path = "./output/%d.jpg" % time.time()
+            file_path = "output/%d.jpg" % time.time()
             # Writing to file is the clear bottleneck here therefore, 
             # threading isnt going to solve that unless we use some kind of threadpool to acually save to disk
             cv2.imwrite(file_path, image)
             # print("epic")
+            # without the trailing comma the param is evaluated as input sequence not tuple
+            self.db_con.execute("INSERT into images(file) values(?)", (file_path,))
+            self.db_con.commit()
             self.socket.emit("image", file_path, broadcast=True)
             self.last_time = time.time()
 
@@ -47,7 +52,7 @@ class WebVisCamera(VideoCamera):
 
 
 class RecordingCam(VideoCamera):
-    def __init__(self, filename="./output/cam_video.mp4"):
+    def __init__(self, filename="output/cam_video.mp4"):
         super().__init__()
         self.filename = filename
         success, image = self.video.read()

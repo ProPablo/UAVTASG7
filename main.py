@@ -8,9 +8,20 @@ import cv2
 
 
 from flask_socketio import SocketIO, send, emit
+import sqlite3
 
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
+is_db_created = False
+if (os.path.isfile("UAV.db")):
+  is_db_created =True
+
+con = sqlite3.connect('UAV.db')
+
+if (not is_db_created):
+# Create table
+  con.execute('''CREATE TABLE images
+                (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, file TEXT)''')
 
 is_recording = False
 is_web_vis = False
@@ -94,8 +105,6 @@ def clean_output():
     file_path = os.path.join(folder, filename)
     if os.path.isfile(file_path) or os.path.islink(file_path):
         os.unlink(file_path)
-
-
 
 
 if __name__ == '__main__':
