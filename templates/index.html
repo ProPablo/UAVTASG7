@@ -3,10 +3,24 @@
 <head>
   <title>UAVTASG7 Control Panel</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <!-- bootstrap imports -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj"
+    crossorigin="anonymous"></script>
+
+  <!-- xterm imports -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.js"
+    integrity="sha512-2PRgAav8Os8vLcOAh1gSaDoNLe1fAyq8/G3QSdyjFFD+OqNjLeHE/8q4+S4MEZgPsuo+itHopj+hJvqS8XUQ8A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.css"
+    integrity="sha512-iLYuqv+v/P4u9erpk+KM83Ioe/l7SEmr7wB6g+Kg1qmEit8EShDKnKtLHlv2QXUp7GGJhmqDI+1PhJYLTsfb8w=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
+    integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
     crossorigin="anonymous"></script>
 
   <style>
@@ -23,6 +37,47 @@
 </head>
 
 <body>
+
+  <!-- <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+      <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+      <span class="fs-4">Sidebar</span>
+    </a>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+      <li class="nav-item">
+        <a href="#" class="nav-link active" aria-current="page">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"/></svg>
+          Home
+        </a>
+      </li>
+      <li>
+        <a href="#" class="nav-link text-white">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
+          Dashboard
+        </a>
+      </li>
+      <li>
+        <a href="#" class="nav-link text-white">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+          Orders
+        </a>
+      </li>
+      <li>
+        <a href="#" class="nav-link text-white">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
+          Products
+        </a>
+      </li>
+      <li>
+        <a href="#" class="nav-link text-white">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"/></svg>
+          Customers
+        </a>
+      </li>
+    </ul>
+  </div>   -->
+
   <div class="container">
     <header class="d-flex justify-content-center py-3">
       <ul class="nav nav-pills">
@@ -35,14 +90,13 @@
     </header>
   </div>
 
-
   <div class="px-4 py-5 my-5 text-center">
-    <img id="video" class="d-block mx-auto mb-4 w-50" src="{{ url_for('video_feed') }}" />
+    <img id="video" class="d-block mx-auto mb-4 w-20" src="{{ url_for('web_vis_feed') }}" />
     <h1 class="display-5 fw-bold">UAVTASG7 Control Panel</h1>
     <div class="col-lg-6 mx-auto">
       <p class="lead mb-4">Control Panel for </p>
       <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-        <button type="button" class="btn btn-primary btn-lg px-4 gap-3">Primary button</button>
+        <button id="startRec" type="button" class="btn btn-primary btn-lg px-4 gap-3">Primary button</button>
         <form method="get" action="{{ url_for('recording') }}">
           <button id="downlaod" type="submit" class="btn btn-outline-secondary btn-lg px-4">Start Recording</button>
         </form>
@@ -52,8 +106,10 @@
         <button id="clear" type="button" class="btn btn-outline-secondary btn-lg px-4">Clear Recordings</button>
       </div>
     </div>
-  </div>
 
+
+    <div id="terminal"></div>
+  </div>
 
   <script>
 
@@ -61,8 +117,41 @@
       const res = await fetch("{{ url_for('clean_output') }}");
     }
 
-    $("#startRec").on('click', onStartRec);
-    $("#stopRec").on("click", onStopRec);
+    async function onStartRec() {
+      console.log("starting recording...");
+      //Replacing the video stream with a new one bugs thigns out, it is prefered to just navigate to new page
+      // $("#video").attr("src", "{{ url_for('recording_feed') }}");
+      // $("#video").remove();
+
+    }
+
+    // $("#startRec").on('click', onStartRec);
+    // $("#stopRec").on("click", onStopRec);
+    $("#clear").on('click', clearRecordings);
+
+    var term = new Terminal();
+    term.open($('#terminal').get(0));
+    // term.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')
+    term.onData(data => {
+      //Does not detect enter key
+      if (data == "\r\n") {
+        console.log("hey man")
+      }
+      term.write(data);
+      console.log(data);
+    });
+
+    var socket = io();
+    socket.on('connect', function () {
+      socket.send("connecting");
+    });
+    socket.on('event', (data) => {
+      console.log(data);
+      term.write(`server_event: ${data}\r\n`);
+    })
+    socket.on('image', (uri)=> {
+      term.write(`image_event:${uri}\r\n`)
+    })
 
   </script>
 </body>
