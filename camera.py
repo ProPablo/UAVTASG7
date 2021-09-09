@@ -96,8 +96,3 @@ class RecordingThread(Thread):
     def get_frame(self):
         ret, jpeg = cv2.imencode('.jpg', self.image)
         return jpeg.tobytes()
-
-            
-        
-    
-

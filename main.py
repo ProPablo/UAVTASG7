@@ -1,12 +1,11 @@
 from flask import Flask, render_template, Response, send_file
+from flask_socketio import SocketIO
 # from flask.helpers import send_file
 from camera import RecordingCam, VideoCamera, WebVisCamera
 import os
 import time
 import cv2
 
-import zipfile
-import io
 
 from flask_socketio import SocketIO, send, emit
 
@@ -17,16 +16,6 @@ is_recording = False
 is_web_vis = False
 output_file = "output/cam_video.mp4"
 recording_thread = None
-
-@app.route('/clean_output')
-def clean_output():
-   # Clean directory
-  folder = './output'
-  for filename in os.listdir(folder):
-    file_path = os.path.join(folder, filename)
-    if os.path.isfile(file_path) or os.path.islink(file_path):
-        os.unlink(file_path)
-  return "done"
 
 
 @app.route('/')
@@ -96,6 +85,18 @@ def handle_message(data):
 @socketio.on('my event')
 def handle_my_custom_event(json):
     print('received json: ' + str(json))
+
+@app.route('/clean_output')
+def clean_output():
+   # Clean directory
+  folder = './output'
+  for filename in os.listdir(folder):
+    file_path = os.path.join(folder, filename)
+    if os.path.isfile(file_path) or os.path.islink(file_path):
+        os.unlink(file_path)
+
+
+
 
 if __name__ == '__main__':
     # clean_output()
