@@ -101,3 +101,17 @@ class RecordingThread(Thread):
     def get_frame(self):
         ret, jpeg = cv2.imencode('.jpg', self.image)
         return jpeg.tobytes()
+
+
+class SensorThread(Thread):
+  def __init__(self, socket: SocketIO, interval = 5):
+    Thread.__init__(self)
+    self.counter = 0
+    self.socket = socket
+    self.interval = interval
+  def run(self):
+    while True:
+        self.counter+=1
+        print(self.counter)
+        self.socket.emit("event", {"data": "summing", "counter": self.counter}) #this blocks other threads completely
+        time.sleep(self.interval)

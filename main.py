@@ -1,17 +1,23 @@
 from flask import Flask, render_template, Response, send_file
 from flask_socketio import SocketIO
 # from flask.helpers import send_file
-from camera import RecordingCam, VideoCamera, WebVisCamera
+from camera import RecordingCam, VideoCamera, WebVisCamera, SensorThread
+# from sensors import SensorThread
 import os
 import time
 import cv2
+import platform
 
+# from gevent import monkey
+# monkey.patch_all()
+#using socket io with gevent or eventlet stops the server from working once client connects
 
 from flask_socketio import SocketIO, send, emit
 import sqlite3
 
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode=None)
+
 is_db_created = False
 if (os.path.isfile("UAV.db")):
   is_db_created =True
@@ -107,7 +113,24 @@ def clean_output():
         os.unlink(file_path)
 
 
+# def thing():
+#   while True:
+#     print(time.time())
+#     socketio.emit("event", {"time": time.time()})
+#     socketio.sleep(0.2)
+
 if __name__ == '__main__':
     # clean_output()
     # app.run(host='0.0.0.0', debug=True)
-    socketio.run(app, host='0.0.0.0', debug=True)
+    # is_production = platform.system() == 'Linux'
+    is_production = True
+    if (is_production):
+      print("On Pi" + str(is_production))
+      s_thread = SensorThread(socketio, 1)
+      s_thread.daemon = True #This kills the thread when proc finished otherwise would have to call join()
+      s_thread.start()
+      # socketio.start_background_task(target=thing)
+
+    socketio.run(app, host='0.0.0.0', debug=not is_production)
+
+

@@ -136,18 +136,19 @@
       //Does not detect enter key
       if (data == "\r\n") {
         console.log("hey man")
-      }
+      } 
       term.write(data);
       console.log(data);
     });
 
+    // var socket = io('/', {transports: ['websocket']});
     var socket = io();
     socket.on('connect', function () {
       socket.send("connecting");
     });
     socket.on('event', (data) => {
       console.log(data);
-      term.write(`server_event: ${data}\r\n`);
+      term.write(`server_event: ${ JSON.stringify(data)}\r\n`);
     })
     socket.on('image', (uri)=> {
       term.write(`image_event:${uri}\r\n`)
