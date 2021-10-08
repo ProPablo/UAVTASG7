@@ -11,6 +11,16 @@ From https://github.com/pimoroni/enviroplus-python run the installation command
   
 
 ```
+
+# conda
+```
+conda activate egb
+conda install flask
+conda install flask-socketio
+conda install opencv
+conda install numpy
+conda install tensorflow
+```
 <!-- pip3 install eventlet -->
 
 - eventlet is installed to provide a non polling solution (buggy right now, does not allow for page refresh)
