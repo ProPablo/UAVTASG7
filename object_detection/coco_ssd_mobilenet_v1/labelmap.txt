@@ -11,7 +11,7 @@ boat
 traffic light
 fire hydrant
 ???
-stop sign
+bagpack
 parking meter
 bench
 bird
@@ -30,13 +30,13 @@ umbrella
 ???
 ???
 handbag
-tie
+bagpack
 suitcase
 frisbee
 skis
 snowboard
 sports ball
-(bagpack)
+bagpack
 baseball bat
 baseball glove
 skateboard
