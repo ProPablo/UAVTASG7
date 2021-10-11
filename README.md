@@ -12,6 +12,9 @@ From https://github.com/pimoroni/enviroplus-python run the installation command
 
 ```
 
+- https://stackoverflow.com/questions/45972357/python-opencv-aruco-no-module-named-cv2-aruco
+
+
 # conda
 ```
 conda activate egb

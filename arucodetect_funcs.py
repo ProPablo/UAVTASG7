@@ -72,7 +72,7 @@ def aruco_detect(image: np.ndarray) -> Tuple[np.ndarray, List[str]]:
 
             cv2.putText(image, str(markerID),
                         (writeIndex), cv2.FONT_HERSHEY_SIMPLEX,
-                        0.5, (0, 0, 255), 2)
+                        0.7, (0, 0, 255), 2)
             print("[INFO] ArUco marker ID: {}".format(markerID))
-            detected.append(markerID)
+            detected.append(int(markerID))
     return image, detected

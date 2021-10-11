@@ -38,7 +38,8 @@ class WebVisCamera(VideoCamera):
     def get_frame(self) -> np.ndarray:
         image = super().get_frame()
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        image, obj_info = compute_recognition(image)
+        # image, obj_info = compute_recognition(image)
+        obj_info = []
         image, aruco_info = aruco_detect(image)
         # face_rects = face_cascade.detectMultiScale(gray, 1.3, 5)
         # for (x, y, w, h) in face_rects:
