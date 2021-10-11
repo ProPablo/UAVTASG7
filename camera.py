@@ -39,10 +39,10 @@ class WebVisCamera(VideoCamera):
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         image, stuff = compute_recognition(image)
         
-        # face_rects = face_cascade.detectMultiScale(gray, 1.3, 5)
-        # for (x, y, w, h) in face_rects:
-        #     cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
-        #     break
+        face_rects = face_cascade.detectMultiScale(gray, 1.3, 5)
+        for (x, y, w, h) in face_rects:
+            cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
+            break
         
 
         if (time.time() - self.last_time > self.image_interval):
@@ -129,7 +129,7 @@ class SensorThread(Thread):
     def run(self):
         while True:
             self.counter += 1
-            print(self.counter)
+            # print(self.counter)
             # this blocks other threads completely
             self.socket.emit(
                 "event", {"data": "summing", "counter": self.counter})

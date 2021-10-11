@@ -94,11 +94,12 @@ input_mean = 127.5
 input_std = 127.5
 
 
-def compute_recognition(image) -> Tuple[np.ndarray, str]:
+def compute_recognition(image: np.ndarray) -> Tuple[np.ndarray, str]:
     frame = image.copy()
     imH, imW, channels = image.shape
     frame_resized = cv2.resize(frame, (width, height))
     input_data = np.expand_dims(frame_resized, axis=0)
+    print("size" + str(imW) + " " + str(imH))
 
     # Normalize pixel values if using a floating model (i.e. if model is non-quantized)
     if floating_model:
@@ -153,7 +154,8 @@ def compute_recognition(image) -> Tuple[np.ndarray, str]:
                        5, (0, 0, 255), thickness=-1)
 
             # Print info
-            info = 'Object ' + str(i) + ': ' + object_name + ' at (' + str(xcenter) + ', ' + str(ycenter) + ')'
+            info = 'Object ' + str(i) + ': ' + object_name + \
+                ' at (' + str(xcenter) + ', ' + str(ycenter) + ')'
             print(info)
-
+    # pass multiple possible objects
     return frame, info
