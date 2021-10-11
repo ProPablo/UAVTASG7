@@ -1,3 +1,4 @@
+import argparse
 from flask import Flask, render_template, Response, send_file
 from flask_socketio import SocketIO
 # from flask.helpers import send_file
@@ -15,14 +16,20 @@ import platform
 
 from flask_socketio import SocketIO, send, emit
 import sqlite3
+from settings import DB_NAME
+
 
 is_production = platform.system() == 'Linux'
 
-if (is_production):
-  from sensors import SensorThread
+parser = argparse.ArgumentParser(description="My parser")
+parser.add_argument('--sensor', dest='sensor', action='store_true')
+args = parser.parse_args()
+
+if (is_production and args["sensor"]):
+    from sensors import SensorThread
 else:
-  from camera import SensorThread
-  
+    from camera import SensorThread
+
 
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode=None)
@@ -31,12 +38,30 @@ is_db_created = False
 if (os.path.isfile("UAV.db")):
     is_db_created = True
 
-con = sqlite3.connect('UAV.db')
+con = sqlite3.connect(DB_NAME)
 
-if (not is_db_created):
-    # Create table
-    con.execute('''CREATE TABLE images
-                (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, file TEXT)''')
+
+def init_db():
+    # Connect or Create DB File
+    images_sql = '''CREATE TABLE IF NOT EXISTS images
+                (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, file TEXT)'''
+    con.execute(images_sql)
+
+    sensor_sql = """
+    CREATE TABLE IF NOT EXISTS 'sensor_data' (
+        'id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        'timestamp' REAL NOT NULL,
+        'temperature' REAL NOT NULL,
+        'pressure' REAL NOT NULL,
+        'humidity' REAL NOT NULL,
+        'light' REAL NOT NULL,
+        'noise' REAL NOT NULL,
+        'gas_reducing' REAL NOT NULL,
+        'gas_nh3' REAL NOT NULL,
+        'gas_oxidising' REAL NOT NULL);
+    """
+    con.execute(sensor_sql)
+
 
 is_recording = False
 is_web_vis = False
@@ -141,12 +166,15 @@ if __name__ == '__main__':
     # clean_output()
     # app.run(host='0.0.0.0', debug=True)
     # is_production = True
+    init_db()
+
     if (is_production):
         print("On Pi" + str(is_production))
-        s_thread = SensorThread(socketio)
-        # This kills the thread when proc finished otherwise would have to call join()
-        s_thread.daemon = True
-        s_thread.start()
-        # socketio.start_background_task(target=thing)
+
+    s_thread = SensorThread(socketio)
+    # This kills the thread when proc finished otherwise would have to call join()
+    s_thread.daemon = True
+    s_thread.start()
+    # socketio.start_background_task(target=thing)
 
     socketio.run(app, host='0.0.0.0', debug=not is_production)

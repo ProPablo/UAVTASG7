@@ -7,6 +7,8 @@ from sqlite3 import Connection, connect
 import numpy as np
 from objdetect_funcs import compute_recognition
 from arucodetect_funcs import aruco_detect
+import random
+from settings import DB_NAME
 
 face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_alt2.xml")
 ds_factor = 0.6
@@ -30,7 +32,7 @@ class VideoCamera(object):
 class WebVisCamera(VideoCamera):
     def __init__(self, socket: SocketIO, image_interval=5):
         self.socket = socket
-        self.db_con = connect("UAV.db")
+        self.db_con = connect(DB_NAME)
         self.last_time = 0
         self.image_interval = image_interval
         super().__init__()
@@ -38,7 +40,7 @@ class WebVisCamera(VideoCamera):
     def get_frame(self) -> np.ndarray:
         image = super().get_frame()
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        # image, obj_info = compute_recognition(image)
+        image, obj_info = compute_recognition(image)
         obj_info = []
         image, aruco_info = aruco_detect(image)
         # face_rects = face_cascade.detectMultiScale(gray, 1.3, 5)
@@ -135,5 +137,5 @@ class SensorThread(Thread):
             # print(self.counter)
             # this blocks other threads completely
             self.socket.emit(
-                "event", {"data": "summing", "counter": self.counter})
+                "sensor", {"time": time.time()*1e3, "counter": self.counter, "data": random.random()})
             time.sleep(self.interval)

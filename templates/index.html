@@ -24,6 +24,10 @@
     crossorigin="anonymous"></script>
 
   <!-- chartjs includes -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
 
   <style>
     /* Doesnt include spinners */
@@ -140,6 +144,7 @@
       </tbody>
     </table>
 
+    <canvas id="chart" width="400" height="400"></canvas>
     <div id="terminal"></div>
   </div>
 
@@ -161,10 +166,36 @@
     // $("#stopRec").on("click", onStopRec);
     $("#clear").on('click', clearRecordings);
 
-    var ctx= $("#chart").getContext('2d');
-    var chart = new Chart
-    
-    
+    var ctx = $("#chart").get(0).getContext('2d');
+    var chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        datasets: [{
+          label: 'Rand',
+          // data: [{ x: 1633957352745, y: 0.1 }],
+          data:[],
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+
+        }]
+      },
+      options: {
+        scales: {
+          // y: {
+          //   beginAtZero: true
+          // },
+          x: {
+            type: 'time',
+            time: {
+              // unit: 'minute'
+              // parsing: false
+            }
+          }
+        }
+      }
+    });
+
+
     var term = new Terminal();
     term.open($('#terminal').get(0));
     // term.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')
@@ -172,7 +203,7 @@
       //Does not detect enter key
       if (data == "\r\n") {
         console.log("hey man")
-      } 
+      }
       term.write(data);
       console.log(data);
     });
@@ -184,14 +215,22 @@
     });
     socket.on('event', (data) => {
       console.log(data);
-      term.write(`server_event: ${ JSON.stringify(data)}\r\n`);
+      term.write(`server_event: ${JSON.stringify(data)}\r\n`);
     })
-    socket.on('img', (uri)=> {
+    socket.on('img', (uri) => {
       term.write(`image_event:${uri}\r\n`)
     })
 
-    socket.on('img_process', (data)=> {
-      term.write(`process_event:${ JSON.stringify(data)}\r\n`)
+    socket.on('img_process', (data) => {
+      term.write(`process_event:${JSON.stringify(data)}\r\n`)
+    })
+
+    socket.on('sensor', (data) => {
+      term.write(`sensor_event:${JSON.stringify(data)}\r\n`)
+      const dataObj = {x:data.time, y: data.data}
+      chart.data.datasets[0].data.push(dataObj);
+      console.log()
+      chart.update();
     })
 
   </script>

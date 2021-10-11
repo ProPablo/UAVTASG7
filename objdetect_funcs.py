@@ -101,7 +101,7 @@ def compute_recognition(image: np.ndarray) -> Tuple[np.ndarray, List[str]]:
     imH, imW, channels = image.shape
     frame_resized = cv2.resize(frame, (width, height))
     input_data = np.expand_dims(frame_resized, axis=0)
-    print("size" + str(imW) + " " + str(imH))
+    # print("size" + str(imW) + " " + str(imH))
 
     # Normalize pixel values if using a floating model (i.e. if model is non-quantized)
     if floating_model:

@@ -1,7 +1,6 @@
 from threading import Thread
 import time
-import socket
-import os
+from flask_socketio import SocketIO
 import logging
 import ST7735 # LCD
 from bme280 import BME280 # Temperature, Humidity, Pressure
@@ -15,10 +14,8 @@ from fonts.ttf import RobotoMedium as UserFont
 
 import sys
 import numpy as np
-import cv2 as cv
 import sqlite3
-
-DB_NAME = "Sensor_DB"
+from settings import DB_NAME
 
 try:
     # Transitional fix for breaking change in LTR559
@@ -120,52 +117,16 @@ def display_text(variable, data, unit):
 
     st7735.display(img)
 
-# Check to see if data is storing in local database
-def sql_create(temp, pressure, humidity, lux, noise, red, nh3, oxi):
-    #Connect or Create DB File
-    conn = sqlite3.connect(DB_NAME)
-    curs = conn.cursor()
+# def sql_create(temp, pressure, humidity, lux, noise, red, nh3, oxi):
+#     conn = sqlite3.connect(DB_NAME)
+#     curs = conn.cursor()
 
-    # Create the Empty SQL Table
-    sql = """
-    CREATE TABLE IF NOT EXISTS 'Sensor_Data' (
-        'temperature' REAL NOT NULL,
-        'pressure' REAL NOT NULL,
-        'humidity' REAL NOT NULL,
-        'light' REAL NOT NULL,
-        'noise' REAL NOT NULL,
-        'gas_reducing' REAL NOT NULL,
-        'gas_nh3' REAL NOT NULL,
-        'gas_oxidising' REAL NOT NULL);
-    """
-    curs.execute(sql)   
-    sql_query = "INSERT INTO Sensor_Data VALUES ('" + str(temp) + "', ' " + str(pressure) + "' , ' " + str(humidity) + "' , ' " + str(lux) + "' , ' " + str(noise) + "' , ' " + str(red) + "' , ' " + str(nh3) + "' , ' " + str(oxi) + "')"
-    curs.execute(sql_query)   
-    conn.commit()
-    curs.close()
-    conn.close()
-
-
-# class SensorThreadOLD(Thread):
-#     def __init__(self, filename):
-#         Thread.__init__(self)
-
-#     def run():
-#         while True:
-#         lux = ltr559.get_lux()
-#         #prox = ltr559.get_proximity()
-#         temperature = bme280.get_temperature()
-#         pressure = bme280.get_pressure()
-#         humidity = bme280.get_humidity()
-#         logging.info("""Light: {:05.02f} Lux
-# Temperature: {:05.2f} *C
-# Pressure: {:05.2f} hPa
-# Relative humidity: {:05.2f} %
-
-# """.format(lux, temperature, pressure, humidity))
-
-#         display_text("Temperature", temperature, "C")
-#         time.sleep(1.0)
+       
+#     sql_query = "INSERT INTO Sensor_Data VALUES ('" + str(temp) + "', ' " + str(pressure) + "' , ' " + str(humidity) + "' , ' " + str(lux) + "' , ' " + str(noise) + "' , ' " + str(red) + "' , ' " + str(nh3) + "' , ' " + str(oxi) + "')"
+#     curs.execute(sql_query)   
+#     conn.commit()
+#     curs.close()
+#     conn.close()
 
 
 class SensorThread(Thread):
@@ -173,6 +134,7 @@ class SensorThread(Thread):
         Thread.__init__(self)
         self.socket = socket
         self.interval = interval
+        self.db_conn = sqlite3.connect(DB_NAME)
 
     def run(self):
         while True:
@@ -190,10 +152,14 @@ class SensorThread(Thread):
             """.format(lux, temperature, pressure, humidity))
             
             display_text("Temperature", temperature, "C")
-            sql_create(temperature, pressure, humidity, lux, 
+            self.sql_create(temperature, pressure, humidity, lux, 
             dummy_noise, gas_readings.reducing, gas_readings.nh3, gas_readings.oxidising)
             time.sleep(1.0)
             
             # Havent done this part yet haha :P
             self.socket.emit("sensor", {"data": "summing", "counter": self.counter})
             time.sleep(self.interval)
+
+    def sql_create(self, temp, pressure, humidity, lux, noise, red, nh3, oxi):        
+        sql_query = "INSERT INTO Sensor_Data VALUES ('" + str(temp) + "', ' " + str(pressure) + "' , ' " + str(humidity) + "' , ' " + str(lux) + "' , ' " + str(noise) + "' , ' " + str(red) + "' , ' " + str(nh3) + "' , ' " + str(oxi) + "')"
+        self.db_conn.execute(sql_query)   
