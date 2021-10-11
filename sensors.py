@@ -3,8 +3,9 @@ import time
 import socket
 import os
 import logging
-import ST7735 # LCD
-from bme280 import BME280 # Temperature, Humidity, Pressure
+from flask_socketio import SocketIO
+import ST7735  # LCD
+from bme280 import BME280  # Temperature, Humidity, Pressure
 
 from PIL import Image
 from PIL import ImageDraw
@@ -21,7 +22,7 @@ except ImportError:
 try:
     from smbus2 import SMBus
 except ImportError:
-    from smbus import SMBus    
+    from smbus import SMBus
 
 logging.basicConfig(
     format='%(asctime)s.%(msecs)03d %(levelname)-8s %(message)s',
@@ -62,6 +63,7 @@ top_pos = 25
 bus = SMBus(1)
 bme280 = BME280(i2c_dev=bus)
 
+
 def get_ip():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
@@ -75,6 +77,8 @@ def get_ip():
     return IP
 
 # Displays data and text on the 0.96" LCD
+
+
 def display_text(variable, data, unit):
     # Format the variable name and value
     message = "{}: {:.1f} {}".format(variable[:4], data, unit)
@@ -82,7 +86,7 @@ def display_text(variable, data, unit):
     text_colour = (255, 255, 255)
     back_colour = (0, 170, 170)
 
-    draw.rectangle((0,0,160,80), back_colour)
+    draw.rectangle((0, 0, 160, 80), back_colour)
     draw.text((0, 0), message, font=font, fill=text_colour)
 
     # Get the IP Address
@@ -92,22 +96,38 @@ def display_text(variable, data, unit):
 
     st7735.display(img)
 
+
+# class SensorThreadOLD(Thread):
+#     def __init__(self, filename):
+#         Thread.__init__(self)
+
+#     def run():
+#         while True:
+#         lux = ltr559.get_lux()
+#         #prox = ltr559.get_proximity()
+#         temperature = bme280.get_temperature()
+#         pressure = bme280.get_pressure()
+#         humidity = bme280.get_humidity()
+#         logging.info("""Light: {:05.02f} Lux
+# Temperature: {:05.2f} *C
+# Pressure: {:05.2f} hPa
+# Relative humidity: {:05.2f} %
+
+# """.format(lux, temperature, pressure, humidity))
+
+#         display_text("Temperature", temperature, "C")
+#         time.sleep(1.0)
+
+
 class SensorThread(Thread):
-  def __init__(self, filename):
-      Thread.__init__(self)
-  def run():
+    def __init__(self, socket: SocketIO, interval=5):
+        Thread.__init__(self)
+        self.socket = socket
+        self.interval = interval
+
+    def run(self):
         while True:
-        lux = ltr559.get_lux()
-        #prox = ltr559.get_proximity()
-        temperature = bme280.get_temperature()
-        pressure = bme280.get_pressure()
-        humidity = bme280.get_humidity()
-        logging.info("""Light: {:05.02f} Lux
-Temperature: {:05.2f} *C
-Pressure: {:05.2f} hPa
-Relative humidity: {:05.2f} %
-
-""".format(lux, temperature, pressure, humidity))
-
-        display_text("Temperature", temperature, "C")
-        time.sleep(1.0)
+            
+            
+            self.socket.emit("sensor", {"data": "summing", "counter": self.counter})
+            time.sleep(self.interval)

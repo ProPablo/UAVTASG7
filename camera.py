@@ -6,6 +6,7 @@ from flask_socketio import SocketIO
 from sqlite3 import Connection, connect
 import numpy as np
 from objdetect_funcs import compute_recognition
+from arucodetect_funcs import aruco_detect
 
 face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_alt2.xml")
 ds_factor = 0.6
@@ -37,12 +38,12 @@ class WebVisCamera(VideoCamera):
     def get_frame(self) -> np.ndarray:
         image = super().get_frame()
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        image, stuff = compute_recognition(image)
-        
-        face_rects = face_cascade.detectMultiScale(gray, 1.3, 5)
-        for (x, y, w, h) in face_rects:
-            cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
-            break
+        image, obj_info = compute_recognition(image)
+        image, aruco_info = aruco_detect(image)
+        # face_rects = face_cascade.detectMultiScale(gray, 1.3, 5)
+        # for (x, y, w, h) in face_rects:
+        #     cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
+        #     break
         
 
         if (time.time() - self.last_time > self.image_interval):
@@ -56,7 +57,8 @@ class WebVisCamera(VideoCamera):
             self.db_con.execute(
                 "INSERT into images(file) values(?)", (file_path,))
             self.db_con.commit()
-            self.socket.emit("image", file_path, broadcast=True)
+            self.socket.emit("img", file_path, broadcast=True)
+            self.socket.emit("img_process", {"aruco": aruco_info, "obj": obj_info})
             self.last_time = time.time()
 
         return image

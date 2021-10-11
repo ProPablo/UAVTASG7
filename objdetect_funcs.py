@@ -6,7 +6,7 @@ import sys
 import time
 from threading import Thread
 import importlib.util
-from typing import Tuple
+from typing import Tuple, List
 
 
 parser = argparse.ArgumentParser()
@@ -96,7 +96,7 @@ input_mean = 127.5
 input_std = 127.5
 
 
-def compute_recognition(image: np.ndarray) -> Tuple[np.ndarray, str]:
+def compute_recognition(image: np.ndarray) -> Tuple[np.ndarray, List[str]]:
     frame = image.copy()
     imH, imW, channels = image.shape
     frame_resized = cv2.resize(frame, (width, height))
@@ -119,7 +119,7 @@ def compute_recognition(image: np.ndarray) -> Tuple[np.ndarray, str]:
     scores = interpreter.get_tensor(output_details[2]['index'])[
         0]  # Confidence of detected objects
     # num = interpreter.get_tensor(output_details[3]['index'])[0]  # Total number of detected objects (inaccurate and not needed)
-
+    detected = []
    # Loop over all detections and draw detection box if confidence is above minimum threshold
     for i in range(len(scores)):
         if ((scores[i] > min_conf_threshold) and (scores[i] <= 1.0)):
@@ -159,6 +159,7 @@ def compute_recognition(image: np.ndarray) -> Tuple[np.ndarray, str]:
             info = 'Object ' + str(i) + ': ' + object_name + \
                 ' at (' + str(xcenter) + ', ' + str(ycenter) + ')'
             print(info)
+            detected.append(info)
     # pass multiple possible objects
-    info = "stuff"
-    return frame, info
+    # info = "stuff"
+    return frame, detected

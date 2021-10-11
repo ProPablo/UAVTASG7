@@ -180,8 +180,12 @@
       console.log(data);
       term.write(`server_event: ${ JSON.stringify(data)}\r\n`);
     })
-    socket.on('image', (uri)=> {
+    socket.on('img', (uri)=> {
       term.write(`image_event:${uri}\r\n`)
+    })
+
+    socket.on('img_process', (data)=> {
+      term.write(`process_event:${ JSON.stringify(data)}\r\n`)
     })
 
   </script>

@@ -1,8 +1,9 @@
 from flask import Flask, render_template, Response, send_file
 from flask_socketio import SocketIO
 # from flask.helpers import send_file
-from camera import RecordingCam, VideoCamera, WebVisCamera, SensorThread
-# from sensors import SensorThread
+from camera import RecordingCam, VideoCamera, WebVisCamera
+# from camera import SensorThread
+from sensors import SensorThread
 import os
 import time
 import cv2
@@ -126,7 +127,7 @@ if __name__ == '__main__':
     is_production = True
     if (is_production):
       print("On Pi" + str(is_production))
-      s_thread = SensorThread(socketio, 1)
+      s_thread = SensorThread(socketio)
       s_thread.daemon = True #This kills the thread when proc finished otherwise would have to call join()
       s_thread.start()
       # socketio.start_background_task(target=thing)
