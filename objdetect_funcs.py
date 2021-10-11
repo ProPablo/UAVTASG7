@@ -160,4 +160,5 @@ def compute_recognition(image: np.ndarray) -> Tuple[np.ndarray, str]:
                 ' at (' + str(xcenter) + ', ' + str(ycenter) + ')'
             print(info)
     # pass multiple possible objects
+    info = "stuff"
     return frame, info
