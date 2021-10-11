@@ -27,6 +27,8 @@ args = parser.parse_args()
 
 # MODEL_NAME = args.modeldir
 MODEL_NAME = 'object_detection\coco_ssd_mobilenet_v1'
+MODEL_NAME = os.path.join('object_detection', "coco_ssd_mobilenet_v1")
+print(model_path_joined)
 GRAPH_NAME = args.graph
 LABELMAP_NAME = args.labels
 min_conf_threshold = float(args.threshold)

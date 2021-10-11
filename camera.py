@@ -5,7 +5,7 @@ from threading import Thread
 from flask_socketio import SocketIO
 from sqlite3 import Connection, connect
 import numpy as np
-from object_detection.objdetect_funcs import compute_recognition
+from objdetect_funcs import compute_recognition
 
 face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_alt2.xml")
 ds_factor = 0.6
