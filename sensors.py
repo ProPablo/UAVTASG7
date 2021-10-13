@@ -141,10 +141,10 @@ class SensorThread(Thread):
         Thread.__init__(self)
         self.socket = socket
         self.interval = interval
-        self.db_conn = sqlite3.connect(DB_NAME)
         self.lcd_mode = 0
 
     def run(self):
+        self.db_conn = sqlite3.connect(DB_NAME)
         while True:
             if(self.lcd_mode == 2):
                 continue
