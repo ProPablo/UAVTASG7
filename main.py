@@ -107,7 +107,7 @@ def web_vis_feed():
     # if (is_web_vis):
     #   return "no can do"
     is_web_vis = True
-    return Response(gen(WebVisCamera(socket=socketio)),
+    return Response(gen(WebVisCamera(socket=socketio, db=con)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
