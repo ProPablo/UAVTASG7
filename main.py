@@ -26,6 +26,7 @@ parser.add_argument('--sensor', dest='sensor', action='store_true')
 args = parser.parse_args()
 
 if (is_production and args.sensor):
+    print "using sensor version"
     from sensors import SensorThread, set_diplay_image
 else:
     from camera import SensorThread
