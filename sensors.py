@@ -172,7 +172,7 @@ class SensorThread(Thread):
 
     def sql_create(self, timestamp, temp, pressure, humidity, lux, noise, red, nh3, oxi):        
         # sql_query = "INSERT INTO Sensor_Data VALUES ('" + str(temp) + "', ' " + str(pressure) + "' , ' " + str(humidity) + "' , ' " + str(lux) + "' , ' " + str(noise) + "' , ' " + str(red) + "' , ' " + str(nh3) + "' , ' " + str(oxi) + "')"
-        sql = """INSERT INTO Sensor_Data(
+        sql = """INSERT INTO sensor_data(
             timestamp,
             temperature,
             pressure,
