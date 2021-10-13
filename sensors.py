@@ -127,14 +127,15 @@ def display_text(variable, data, unit):
 
 #through testing determined this is needed because flask needs threads dameonised for stuff to run in background
 class SensorThread(Thread):
-    def __init__(self, socket: SocketIO, interval=5):
+    def __init__(self, socket: SocketIO, db, interval=5,):
         Thread.__init__(self)
         self.socket = socket
         self.interval = interval
         self.lcd_mode = 0
+        self.db_conn = db
 
     def run(self):
-        self.db_conn = sqlite3.connect(DB_NAME)
+        # self.db_conn = sqlite3.connect(DB_NAME) #needed if making the dbconn in this thread (cant make in init)
         while True:
             if(self.lcd_mode == 2):
                 continue

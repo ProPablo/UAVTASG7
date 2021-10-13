@@ -61,7 +61,7 @@ class WebVisCamera(VideoCamera):
             # without the trailing comma the param is evaluated as input sequence not tuple
             self.db_con.execute(
                 "INSERT into images(file) values(?)", (file_path,))
-            self.db_con.commit()
+            # self.db_con.commit()
             self.socket.emit("img", file_path, broadcast=True)
             self.socket.emit("img_process", {"aruco": aruco_info, "obj": obj_info})
             self.last_time = time.time()
@@ -140,6 +140,8 @@ class SensorThread(Thread):
             print(self.db_conn.execute("SELECT count(*) FROM images"))
             # print(self.counter)
             # this blocks other threads completely
+            sql = """INSERT INTO Sensor_Data(timestamp) values(?)"""
+            self.db_conn.execute(sql, (time.time(),))
             self.socket.emit(
                 "sensor", {"time": time.time()*1e3, "counter": self.counter, "data": random.random()})
             time.sleep(self.interval)

@@ -40,7 +40,7 @@ is_db_created = False
 if (os.path.isfile("UAV.db")):
     is_db_created = True
 
-con = sqlite3.connect(DB_NAME)
+con = sqlite3.connect(DB_NAME, check_same_thread=False)
 
 
 is_recording = False
@@ -182,7 +182,7 @@ if __name__ == '__main__':
     if (is_production):
         print("On Pi" + str(is_production))
 
-    s_thread = SensorThread(socketio)
+    s_thread = SensorThread(socketio, con)
     # This kills the thread when proc finished otherwise would have to call join()
     s_thread.daemon = True
     s_thread.start()
