@@ -124,16 +124,6 @@ def display_text(variable, data, unit):
 
     st7735.display(img)
 
-# def sql_create(temp, pressure, humidity, lux, noise, red, nh3, oxi):
-#     conn = sqlite3.connect(DB_NAME)
-#     curs = conn.cursor()
-
-       
-#     sql_query = "INSERT INTO Sensor_Data VALUES ('" + str(temp) + "', ' " + str(pressure) + "' , ' " + str(humidity) + "' , ' " + str(lux) + "' , ' " + str(noise) + "' , ' " + str(red) + "' , ' " + str(nh3) + "' , ' " + str(oxi) + "')"
-#     curs.execute(sql_query)   
-#     conn.commit()
-#     curs.close()
-#     conn.close()
 
 #through testing determined this is needed because flask needs threads dameonised for stuff to run in background
 class SensorThread(Thread):
@@ -164,11 +154,34 @@ class SensorThread(Thread):
                 """.format(lux, temperature, pressure, humidity))
                 
                 display_text("Temperature", temperature, "C")
+                timestamp = time.time()*1e3
                 self.sql_create(temperature, pressure, humidity, lux, 
-                dummy_noise, gas_readings.reducing, gas_readings.nh3, gas_readings.oxidising)        
-                self.socket.emit("sensor", {"data": "summing", "counter": self.counter})
+                dummy_noise, gas_readings.reducing, gas_readings.nh3, gas_readings.oxidising)
+                payload = {"timestamp": timestamp, 
+                "temperature": temperature,
+                "pressure": pressure,
+                "humidity": humidity,
+                "lux": lux,
+                "noise": dummy_noise,
+                "reducing": gas_readings.reducing,
+                "nh3": gas_readings.nh3,
+                "gas_oxidising": gas_readings.nh3}      
+                self.socket.emit("sensor", payload)
             time.sleep(self.interval)
 
-    def sql_create(self, temp, pressure, humidity, lux, noise, red, nh3, oxi):        
-        sql_query = "INSERT INTO Sensor_Data VALUES ('" + str(temp) + "', ' " + str(pressure) + "' , ' " + str(humidity) + "' , ' " + str(lux) + "' , ' " + str(noise) + "' , ' " + str(red) + "' , ' " + str(nh3) + "' , ' " + str(oxi) + "')"
-        self.db_conn.execute(sql_query)   
+    def sql_create(self, timestamp, temp, pressure, humidity, lux, noise, red, nh3, oxi):        
+        # sql_query = "INSERT INTO Sensor_Data VALUES ('" + str(temp) + "', ' " + str(pressure) + "' , ' " + str(humidity) + "' , ' " + str(lux) + "' , ' " + str(noise) + "' , ' " + str(red) + "' , ' " + str(nh3) + "' , ' " + str(oxi) + "')"
+        sql = """INSERT INTO Sensor_Data(
+            timestamp,
+            temperature,
+            pressure,
+            humidity,
+            light,
+            noise,
+            gas_reducing,
+            gas_nh3,
+            gas_oxidising
+        ) 
+        VALUES(?,?,?,?,?,?,?,?,?)"""
+        sql_vals = (timestamp, temp, pressure, humidity, lux, noise, red, nh3, oxi)
+        self.db_conn.execute(sql, sql_vals)   
