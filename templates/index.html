@@ -176,6 +176,7 @@
           data:[],
           backgroundColor: '#3900990f',
           borderColor: '#390099',
+          yAxisID: "other"
 
         },
         {
@@ -183,50 +184,63 @@
           data:[],
           backgroundColor: '#6C00790f',
           borderColor: '#6C0079',
+          yAxisID: "other"
+
         },
         {
           label: 'Humidity',
           data:[],
           backgroundColor: '#9E00590f',
           borderColor: '#9E0059',
+          yAxisID: "other"
+
         },
         {
           label: 'Light',
           data:[],
           backgroundColor: '#FF00540f',
           borderColor: '#FF0054',
+          yAxisID: "other"
+
         },
         {
           label: 'Noise',
           data:[],
           backgroundColor: '#FF2A2A0f',
           borderColor: '#FF2A2A',
+          yAxisID: "other"
+
         },
         {
           label: 'Gas_Reducing',
           data:[],
           backgroundColor: '#FF54000f',
           borderColor: '#FF5400',
+          yAxisID: "gas"
         },
         {
           label: 'Gas_nh3',
           data:[],
           backgroundColor: '#FF89000f',
           borderColor: '#FF8900',
+          yAxisID: "gas"
         },
         {
           label: 'Gas_Oxidising',
           data:[],
           backgroundColor: '#FFBD000f',
           borderColor: '#FFBD00',
+          yAxisID: "gas"
         }
       ]
       },
       options: {
         scales: {
-          // y: {
-          //   beginAtZero: true
-          // },
+          yAxis:[
+            {id:"gas"},
+            {id:"other"}
+          ],
+
           x: {
             type: 'time',
             time: {
