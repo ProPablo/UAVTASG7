@@ -159,14 +159,14 @@ class SensorThread(Thread):
                 self.sql_create(timestamp, temperature, pressure, humidity, lux, 
                 dummy_noise, gas_readings.reducing, gas_readings.nh3, gas_readings.oxidising)
                 payload = {"timestamp": timestamp, 
-                "temperature": temperature,
-                "pressure": pressure,
-                "humidity": humidity,
-                "lux": lux,
-                "noise": dummy_noise,
-                "reducing": gas_readings.reducing,
-                "nh3": gas_readings.nh3,
-                "gas_oxidising": gas_readings.nh3}      
+                "Temp": temperature,
+                "Pressure": pressure,
+                "Humidity": humidity,
+                "Light": lux,
+                "Noise": dummy_noise,
+                "Gas_Reducing": gas_readings.reducing,
+                "Gas_nh3": gas_readings.nh3,
+                "Gas_Oxidising": gas_readings.nh3}      
                 self.socket.emit("sensor", payload)
             time.sleep(self.interval)
 
