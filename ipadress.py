@@ -85,7 +85,6 @@ try:
         new_message = "IP: %s" % new_ip
         display_message(new_message)
         sleep(5)
-        pass
 
 # Turn off backlight on control-c
 except KeyboardInterrupt:

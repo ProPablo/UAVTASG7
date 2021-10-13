@@ -26,7 +26,7 @@ parser.add_argument('--sensor', dest='sensor', action='store_true')
 args = parser.parse_args()
 
 if (is_production and args["sensor"]):
-    from sensors import SensorThread
+    from sensors import SensorThread, set_diplay_image
 else:
     from camera import SensorThread
 
@@ -39,6 +39,13 @@ if (os.path.isfile("UAV.db")):
     is_db_created = True
 
 con = sqlite3.connect(DB_NAME)
+
+
+is_recording = False
+is_web_vis = False
+lcd_mode = 0 # 0= ip, 1= sensor, 2=live_feed
+output_file = "output/cam_video.mp4"
+recording_thread = None
 
 
 def init_db():
@@ -63,12 +70,6 @@ def init_db():
     con.execute(sensor_sql)
 
 
-is_recording = False
-is_web_vis = False
-output_file = "output/cam_video.mp4"
-recording_thread = None
-
-
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -82,6 +83,9 @@ def recording():
 def gen(camera):
     while True:
         frame = camera.get_frame()
+        if lcd_mode == 2:
+            set_diplay_image(frame)
+
         ret, jpeg = cv2.imencode('.jpg', frame)
         jpeg = jpeg.tobytes()
         yield (b'--frame\r\n'
@@ -155,7 +159,12 @@ def clean_output():
         if os.path.isfile(file_path) or os.path.islink(file_path):
             os.unlink(file_path)
 
-
+@app.route('/lcd_mode/<int:mode>')
+def lcd_mode(mode):
+    global lcd_mode, s_thread
+    lcd_mode = mode
+    s_thread.lcd_mode = mode
+    pass
 # def thing():
 #   while True:
 #     print(time.time())

@@ -13,6 +13,7 @@ from PIL import ImageFont
 from fonts.ttf import RobotoMedium as UserFont
 
 import sys
+import socket
 import numpy as np
 import sqlite3
 from settings import DB_NAME
@@ -93,6 +94,12 @@ def get_ip():
         s.close()
     return IP
 
+def set_diplay_image(img):
+    #convert to PIL
+    im_pil = Image.fromarray(img)
+    im_pil = im_pil.resize((WIDTH, HEIGHT))
+    st7735.display(im_pil)
+
 # EDIT: User can choose IP, Temp or Image Display
 # Displays data and text on the 0.96" LCD
 def display_text(variable, data, unit):
@@ -128,36 +135,38 @@ def display_text(variable, data, unit):
 #     curs.close()
 #     conn.close()
 
-
+#through testing determined this is needed because flask needs threads dameonised for stuff to run in background
 class SensorThread(Thread):
     def __init__(self, socket: SocketIO, interval=5):
         Thread.__init__(self)
         self.socket = socket
         self.interval = interval
         self.db_conn = sqlite3.connect(DB_NAME)
+        self.lcd_mode = 0
 
     def run(self):
         while True:
-            lux = ltr559.get_lux()
-            temperature = bme280.get_temperature()
-            pressure = bme280.get_pressure()
-            humidity = bme280.get_humidity()
-            gas_readings = gas.read_all() #gas_readings.reducing, gas_readings.nh3, gas_readings.oxidising
-            low, mid, high, amp = noise.get_noise_profile() # What to do with these
-            dummy_noise = 100 # for SQL testing purposes
-            logging.info("""Light: {:05.02f} Lux
-            Temperature: {:05.2f} *C
-            Pressure: {:05.2f} hPa
-            Relative humidity: {:05.2f} %
-            """.format(lux, temperature, pressure, humidity))
-            
-            display_text("Temperature", temperature, "C")
-            self.sql_create(temperature, pressure, humidity, lux, 
-            dummy_noise, gas_readings.reducing, gas_readings.nh3, gas_readings.oxidising)
-            time.sleep(1.0)
-            
-            # Havent done this part yet haha :P
-            self.socket.emit("sensor", {"data": "summing", "counter": self.counter})
+            if(self.lcd_mode == 2):
+                continue
+            elif(self.lcd_mode == 0):
+
+                lux = ltr559.get_lux()
+                temperature = bme280.get_temperature()
+                pressure = bme280.get_pressure()
+                humidity = bme280.get_humidity()
+                gas_readings = gas.read_all() #gas_readings.reducing, gas_readings.nh3, gas_readings.oxidising
+                low, mid, high, amp = noise.get_noise_profile() # What to do with these
+                dummy_noise = 100 # for SQL testing purposes
+                logging.info("""Light: {:05.02f} Lux
+                Temperature: {:05.2f} *C
+                Pressure: {:05.2f} hPa
+                Relative humidity: {:05.2f} %
+                """.format(lux, temperature, pressure, humidity))
+                
+                display_text("Temperature", temperature, "C")
+                self.sql_create(temperature, pressure, humidity, lux, 
+                dummy_noise, gas_readings.reducing, gas_readings.nh3, gas_readings.oxidising)        
+                self.socket.emit("sensor", {"data": "summing", "counter": self.counter})
             time.sleep(self.interval)
 
     def sql_create(self, temp, pressure, humidity, lux, noise, red, nh3, oxi):        
