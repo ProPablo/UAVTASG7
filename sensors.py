@@ -155,7 +155,7 @@ class SensorThread(Thread):
                 
                 display_text("Temperature", temperature, "C")
                 timestamp = time.time()*1e3
-                self.sql_create(temperature, pressure, humidity, lux, 
+                self.sql_create(timestamp, temperature, pressure, humidity, lux, 
                 dummy_noise, gas_readings.reducing, gas_readings.nh3, gas_readings.oxidising)
                 payload = {"timestamp": timestamp, 
                 "temperature": temperature,
