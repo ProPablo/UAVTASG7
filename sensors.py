@@ -185,4 +185,5 @@ class SensorThread(Thread):
         ) 
         VALUES(?,?,?,?,?,?,?,?,?)"""
         sql_vals = (timestamp, temp, pressure, humidity, lux, noise, red, nh3, oxi)
-        self.db_conn.execute(sql, sql_vals)   
+        self.db_conn.execute(sql, sql_vals)
+        self.db_conn.commit()

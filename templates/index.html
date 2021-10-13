@@ -171,13 +171,56 @@
       type: 'line',
       data: {
         datasets: [{
-          label: 'Rand',
+          label: 'Temp',
           // data: [{ x: 1633957352745, y: 0.1 }],
+          data:[],
+          backgroundColor: '#9E0059',
+          borderColor: '#9E00590f',
+
+        },
+        {
+          label: 'Pressure',
           data:[],
           backgroundColor: 'rgba(255, 99, 132, 0.2)',
           borderColor: 'rgba(255, 99, 132, 1)',
-
-        }]
+        },
+        {
+          label: 'Humidity',
+          data:[],
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+        },
+        {
+          label: 'Light',
+          data:[],
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+        },
+        {
+          label: 'Noise',
+          data:[],
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+        },
+        {
+          label: 'Gas_Reducing',
+          data:[],
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+        },
+        {
+          label: 'Gas_nh3',
+          data:[],
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+        },
+        {
+          label: 'Gas_Oxidising',
+          data:[],
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+        }
+      ]
       },
       options: {
         scales: {
@@ -227,7 +270,8 @@
 
     socket.on('sensor', (data) => {
       term.write(`sensor_event:${JSON.stringify(data)}\r\n`)
-      const dataObj = {x:data.time, y: data.data}
+      
+      const dataObj = {x:data.timestamp, y: data.temperature}
       chart.data.datasets[0].data.push(dataObj);
       console.log()
       chart.update();

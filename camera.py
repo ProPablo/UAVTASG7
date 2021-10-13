@@ -62,7 +62,7 @@ class WebVisCamera(VideoCamera):
             # without the trailing comma the param is evaluated as input sequence not tuple
             self.db_con.execute(
                 "INSERT into images(file) values(?)", (file_path,))
-            # self.db_con.commit()
+            self.db_con.commit()
             self.socket.emit("img", file_path, broadcast=True)
             self.socket.emit("img_process", {"aruco": aruco_info, "obj": obj_info})
             self.last_time = time.time()
