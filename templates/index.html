@@ -272,7 +272,7 @@
       term.write(`sensor_event:${JSON.stringify(data)}\r\n`)
       // const dataObj = {x:data.timestamp, y: data.temperature}
       // chart.data.datasets[0].data.push(dataObj);
-      chart.data.datasets.array.forEach(dataset => {
+      chart.data.datasets.forEach(dataset => {
         const dataObj = {x: data.timestamp, y: data[dataset.label]};
         dataset.data.push(dataObj);
       });
