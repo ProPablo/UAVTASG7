@@ -164,10 +164,11 @@ def clean_output():
 
 @app.route('/lcd_mode/<int:mode>')
 def lcd_mode(mode):
+    print("changing mode " + str(mode))
     global lcd_mode, s_thread
     lcd_mode = mode
     s_thread.lcd_mode = mode
-    pass
+    return "done"
 # def thing():
 #   while True:
 #     print(time.time())

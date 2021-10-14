@@ -40,6 +40,15 @@
       margin-right: auto;
       width: 35%
     }
+
+    .hist-img-placeholder {
+      /* visibility: hidden; */
+      display: none;
+    }
+
+    .h-hist {
+      height: 90%
+    }
   </style>
 </head>
 
@@ -53,35 +62,34 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent"> -->
-      
+
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-        
-      
+
+
           <a class="nav-link active" aria-current="page" href="#">Home</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">Settings/Restart</a>
         </li>
-        
+
         <li class="nav-item">
-          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+          <a href="{{ url_for('recording') }}" class="nav-link">Recording</a>
         </li>
       </ul>
 
       <label>LCD Mode Select:</label>
       <div class="border d-flex rounded">
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
+          <input class="form-check-input" type="radio" name="lcdMode" id="inlineRadio1" value="0">
           <label class="form-check-label" for="inlineRadio1">1</label>
         </div>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+          <input class="form-check-input" type="radio" name="lcdMode" id="inlineRadio2" value="1">
           <label class="form-check-label" for="inlineRadio2">2</label>
         </div>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"
-            disabled>
+          <input class="form-check-input" type="radio" name="lcdMode" id="inlineRadio3" value="2">
           <label class="form-check-label" for="inlineRadio3">3 (disabled)</label>
         </div>
       </div>
@@ -89,50 +97,10 @@
     </div>
   </nav>
 
-
-
-  <!-- <div class="container">
-
-    <header class="d-flex justify-content-center py-3">
-
-      <ul class="nav nav-pills">
-        <li class="nav-item">
-
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
-            <label class="form-check-label" for="inlineRadio1">1</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
-            <label class="form-check-label" for="inlineRadio2">2</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"
-              disabled>
-            <label class="form-check-label" for="inlineRadio3">3 (disabled)</label>
-          </div>
-        </li>
-        <li class="nav-item"><a href="#" class="nav-link active" aria-current="page">Home</a></li>
-        <li class="nav-item"><a href="{{ url_for('recording') }}" class="nav-link">Recording</a></li>
-        <li class="nav-item"><a href="#" class="nav-link">Image Processing</a></li>
-        <li class="nav-item"><a href="#" class="nav-link">Air Quality</a></li>
-        <li class="nav-item"><a href="#" class="nav-link">Settings/Restart</a></li>
-      </ul>
-    </header>
-  </div> -->
-
-  <ul class="list-group list-group-flush col-sm-2 position-absolute overflow-auto h-100">
+  <ul id="hist-img-container" class="list-group list-group-flush col-sm-2 position-absolute overflow-auto h-hist">
     <!-- <li class="list-group-item"><img src="static/output/1634170119.jpg" ></li> -->
 
-    <li class="list-group-item"><img src="static/output/1634170119.jpg" class="img-fluid" ></li>
-    <li class="list-group-item"><img src="static/output/1634170119.jpg" class="img-fluid" ></li>
-    <li class="list-group-item"><img src="static/output/1634170119.jpg" class="img-fluid" ></li>
-    <li class="list-group-item"><img src="static/output/1634170119.jpg" class="img-fluid" ></li>
-    <li class="list-group-item"><img src="static/output/1634170119.jpg" class="img-fluid" ></li>
-    <li class="list-group-item"><img src="static/output/1634170119.jpg" class="img-fluid" ></li>
-    <li class="list-group-item"><img src="static/output/1634170119.jpg" class="img-fluid" ></li>
-    <li class="list-group-item"><img src="static/output/1634170119.jpg" class="img-fluid" ></li>
-    <li class="list-group-item"><img src="static/output/1634170119.jpg" class="img-fluid" ></li>
+    <li class="hist-img-placeholder list-group-item"><img src="static/output/1634170119.jpg" class="img-fluid"></li>
   </ul>
 
 
@@ -315,7 +283,11 @@
       term.write(`server_event: ${JSON.stringify(data)}\r\n`);
     })
     socket.on('img', (uri) => {
-      term.write(`image_event:${uri}\r\n`)
+      term.write(`image_event:${uri}\r\n`);
+      const clonedHolder = $(".hist-img-placeholder").clone().appendTo("#hist-img-container").removeClass("hist-img-placeholder")
+      const img = clonedHolder.find('img');
+      img.attr("src", uri);
+      $("#hist-img-container").animate({ scrollTop: clonedHolder.offset().top }, 500);
     })
 
     socket.on('img_process', (data) => {
@@ -332,6 +304,18 @@
       });
       chart.update();
     })
+
+    $('input[type=radio][name=lcdMode]').change(async function (event) {
+      const self = this;
+      console.log({ event, self });
+      const res = await fetch(`lcd_mode/${this.value}`);
+      // if (this.value == 'allot') {
+      //   alert("Allot Thai Gayo Bhai");
+      // }
+      // else if (this.value == 'transfer') {
+      //   alert("Transfer Thai Gayo");
+      // }
+    });
 
   </script>
 </body>
