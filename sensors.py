@@ -100,9 +100,21 @@ def set_diplay_image(img):
     im_pil = im_pil.resize((WIDTH, HEIGHT))
     st7735.display(im_pil)
 
+def display_ip():
+    text_colour = (255, 255, 255)
+    back_colour = (0, 170, 170)
+    draw.rectangle((0,0,160,80), back_colour)
+
+    # Get the IP Address
+    new_ip = get_ip()
+    new_message = "IP: %s" % new_ip
+    draw.text((0, 24), new_message, font=font, fill=text_colour)
+
+    st7735.display(img)
+
 # EDIT: User can choose IP, Temp or Image Display
 # Displays data and text on the 0.96" LCD
-def display_text(variable, data, unit):
+def display_temp(variable, data, unit):
 
     #Obtain the CPU temperature
     cpu_temp = get_cpu_temperature()
@@ -117,13 +129,7 @@ def display_text(variable, data, unit):
     draw.text((0, 0), message, font=font, fill=text_colour)
     draw.text((0, 12), cpu_message, font=font, fill=text_colour)
 
-    # Get the IP Address
-    new_ip = get_ip()
-    new_message = "IP: %s" % new_ip
-    draw.text((0, 24), new_message, font=font, fill=text_colour)
-
     st7735.display(img)
-
 
 #through testing determined this is needed because flask needs threads dameonised for stuff to run in background
 class SensorThread(Thread):
@@ -137,37 +143,38 @@ class SensorThread(Thread):
     def run(self):
         # self.db_conn = sqlite3.connect(DB_NAME) #needed if making the dbconn in this thread (cant make in init)
         while True:
+        
+            # Get Sensor Data
+            lux = ltr559.get_lux()
+            temperature = bme280.get_temperature()
+            pressure = bme280.get_pressure()
+            humidity = bme280.get_humidity()
+            gas_readings = gas.read_all()
+
+            # Data to SQlite
+            timestamp = time.time()*1e3
+            self.sql_create(timestamp, temperature, pressure, humidity, lux, 
+            gas_readings.reducing, gas_readings.nh3, gas_readings.oxidising)
+            payload = {"timestamp": timestamp, 
+            "Temp": temperature,
+            "Pressure": pressure,
+            "Humidity": humidity,
+            "Light": lux,
+            "Gas_Reducing": gas_readings.reducing,
+            "Gas_nh3": gas_readings.nh3,
+            "Gas_Oxidising": gas_readings.nh3}      
+            self.socket.emit("sensor", payload)
+
+            # Check to see what to display on the LCD Screen
             if(self.lcd_mode == 2):
+                # Display Vid on LCD
                 continue
             elif(self.lcd_mode == 0):
+                # Display IP
+                display_ip()
+            elif(self.lcd_mode == 1):
+                display_temp("Temperature", temperature, "C")
 
-                lux = ltr559.get_lux()
-                temperature = bme280.get_temperature()
-                pressure = bme280.get_pressure()
-                humidity = bme280.get_humidity()
-                gas_readings = gas.read_all() #gas_readings.reducing, gas_readings.nh3, gas_readings.oxidising
-                # low, mid, high, amp = noise.get_noise_profile() # What to do with these
-                # dummy_noise = 100 # for SQL testing purposes
-                # logging.info("""Light: {:05.02f} Lux
-                # Temperature: {:05.2f} *C
-                # Pressure: {:05.2f} hPa
-                # Relative humidity: {:05.2f} %
-                # """.format(lux, temperature, pressure, humidity))
-                
-                display_text("Temperature", temperature, "C")
-                timestamp = time.time()*1e3
-                self.sql_create(timestamp, temperature, pressure, humidity, lux, 
-                gas_readings.reducing, gas_readings.nh3, gas_readings.oxidising)
-                payload = {"timestamp": timestamp, 
-                "Temp": temperature,
-                "Pressure": pressure,
-                "Humidity": humidity,
-                "Light": lux,
-                # "Noise": dummy_noise,
-                "Gas_Reducing": gas_readings.reducing,
-                "Gas_nh3": gas_readings.nh3,
-                "Gas_Oxidising": gas_readings.nh3}      
-                self.socket.emit("sensor", payload)
             time.sleep(self.interval)
 
     def sql_create(self, timestamp, temp, pressure, humidity, lux, red, nh3, oxi):        
