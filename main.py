@@ -64,7 +64,6 @@ def init_db():
         'pressure' REAL NOT NULL,
         'humidity' REAL NOT NULL,
         'light' REAL NOT NULL,
-        'noise' REAL NOT NULL,
         'gas_reducing' REAL NOT NULL,
         'gas_nh3' REAL NOT NULL,
         'gas_oxidising' REAL NOT NULL);

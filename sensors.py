@@ -5,7 +5,7 @@ import logging
 import ST7735 # LCD
 from bme280 import BME280 # Temperature, Humidity, Pressure
 from enviroplus import gas
-from enviroplus.noise import Noise
+# from enviroplus.noise import Noise
 
 from PIL import Image
 from PIL import ImageDraw
@@ -30,7 +30,7 @@ try:
 except ImportError:
     from smbus import SMBus    
 
-noise = Noise()
+# noise = Noise()
 
 logging.basicConfig(
     format='%(asctime)s.%(msecs)03d %(levelname)-8s %(message)s',
@@ -72,7 +72,7 @@ bus = SMBus(1)
 bme280 = BME280(i2c_dev=bus)
 
 # Is this needed
-gas.enable_adc()
+# gas.enable_adc()
 #as.set_adc_gain(4.096)s
 
 def get_cpu_temperature():
@@ -146,31 +146,31 @@ class SensorThread(Thread):
                 pressure = bme280.get_pressure()
                 humidity = bme280.get_humidity()
                 gas_readings = gas.read_all() #gas_readings.reducing, gas_readings.nh3, gas_readings.oxidising
-                low, mid, high, amp = noise.get_noise_profile() # What to do with these
-                dummy_noise = 100 # for SQL testing purposes
-                logging.info("""Light: {:05.02f} Lux
-                Temperature: {:05.2f} *C
-                Pressure: {:05.2f} hPa
-                Relative humidity: {:05.2f} %
-                """.format(lux, temperature, pressure, humidity))
+                # low, mid, high, amp = noise.get_noise_profile() # What to do with these
+                # dummy_noise = 100 # for SQL testing purposes
+                # logging.info("""Light: {:05.02f} Lux
+                # Temperature: {:05.2f} *C
+                # Pressure: {:05.2f} hPa
+                # Relative humidity: {:05.2f} %
+                # """.format(lux, temperature, pressure, humidity))
                 
                 display_text("Temperature", temperature, "C")
                 timestamp = time.time()*1e3
                 self.sql_create(timestamp, temperature, pressure, humidity, lux, 
-                dummy_noise, gas_readings.reducing, gas_readings.nh3, gas_readings.oxidising)
+                gas_readings.reducing, gas_readings.nh3, gas_readings.oxidising)
                 payload = {"timestamp": timestamp, 
                 "Temp": temperature,
                 "Pressure": pressure,
                 "Humidity": humidity,
                 "Light": lux,
-                "Noise": dummy_noise,
+                # "Noise": dummy_noise,
                 "Gas_Reducing": gas_readings.reducing,
                 "Gas_nh3": gas_readings.nh3,
                 "Gas_Oxidising": gas_readings.nh3}      
                 self.socket.emit("sensor", payload)
             time.sleep(self.interval)
 
-    def sql_create(self, timestamp, temp, pressure, humidity, lux, noise, red, nh3, oxi):        
+    def sql_create(self, timestamp, temp, pressure, humidity, lux, red, nh3, oxi):        
         # sql_query = "INSERT INTO Sensor_Data VALUES ('" + str(temp) + "', ' " + str(pressure) + "' , ' " + str(humidity) + "' , ' " + str(lux) + "' , ' " + str(noise) + "' , ' " + str(red) + "' , ' " + str(nh3) + "' , ' " + str(oxi) + "')"
         sql = """INSERT INTO sensor_data(
             timestamp,
@@ -178,12 +178,11 @@ class SensorThread(Thread):
             pressure,
             humidity,
             light,
-            noise,
             gas_reducing,
             gas_nh3,
             gas_oxidising
         ) 
-        VALUES(?,?,?,?,?,?,?,?,?)"""
-        sql_vals = (timestamp, temp, pressure, humidity, lux, noise, red, nh3, oxi)
+        VALUES(?,?,?,?,?,?,?,?)"""
+        sql_vals = (timestamp, temp, pressure, humidity, lux, red, nh3, oxi)
         self.db_conn.execute(sql, sql_vals)
         self.db_conn.commit()
