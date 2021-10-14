@@ -55,7 +55,7 @@ class WebVisCamera(VideoCamera):
         if (time.time() - self.last_time > self.image_interval):
             # print("got stuff" + stuff)
 
-            file_path = "output/%d.jpg" % time.time()
+            file_path = "static/output/%d.jpg" % time.time()
             # Writing to file is the clear bottleneck here therefore,
             # threading isnt going to solve that unless we use some kind of threadpool to acually save to disk
             cv2.imwrite(file_path, image)
@@ -128,21 +128,22 @@ class RecordingThread(Thread):
 
 
 class SensorThread(Thread):
-    def __init__(self, socket: SocketIO, interval=5):
+    def __init__(self, socket: SocketIO, db,interval=5):
         Thread.__init__(self)
         self.counter = 0
         self.socket = socket
+        self.db_conn = db
         self.interval = interval
 
     def run(self):
-        self.db_conn = sqlite3.connect(DB_NAME)
+        # self.db_conn = sqlite3.connect(DB_NAME)
         while True:
             self.counter += 1
             print(self.db_conn.execute("SELECT count(*) FROM images"))
             # print(self.counter)
             # this blocks other threads completely
-            sql = """INSERT INTO Sensor_Data(timestamp) values(?)"""
-            self.db_conn.execute(sql, (time.time(),))
+            # sql = """INSERT INTO Sensor_Data(timestamp) values(?)"""
+            # self.db_conn.execute(sql, (time.time(),))
             self.socket.emit(
                 "sensor", {"time": time.time()*1e3, "counter": self.counter, "data": random.random()})
             time.sleep(self.interval)

@@ -26,14 +26,15 @@
   <!-- chartjs includes -->
   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script> -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 
 
   <style>
     /* Doesnt include spinners */
     /* @import "https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"; */
 
-    img {
+    .webcam-disp {
       display: block;
       margin-left: auto;
       margin-right: auto;
@@ -44,49 +45,73 @@
 
 <body>
 
-  <!-- <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
-    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-      <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
-      <span class="fs-4">Sidebar</span>
-    </a>
-    <hr>
-    <ul class="nav nav-pills flex-column mb-auto">
-      <li class="nav-item">
-        <a href="#" class="nav-link active" aria-current="page">
-          <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"/></svg>
-          Home
-        </a>
-      </li>
-      <li>
-        <a href="#" class="nav-link text-white">
-          <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
-          Dashboard
-        </a>
-      </li>
-      <li>
-        <a href="#" class="nav-link text-white">
-          <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"/></svg>
-          Orders
-        </a>
-      </li>
-      <li>
-        <a href="#" class="nav-link text-white">
-          <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
-          Products
-        </a>
-      </li>
-      <li>
-        <a href="#" class="nav-link text-white">
-          <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"/></svg>
-          Customers
-        </a>
-      </li>
-    </ul>
-  </div>   -->
 
-  <div class="container">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">UAVTASG7 Control Panel</a>
+      <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent"> -->
+      
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+        
+      
+          <a class="nav-link active" aria-current="page" href="#">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Settings/Restart</a>
+        </li>
+        
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+        </li>
+      </ul>
+
+      <label>LCD Mode Select:</label>
+      <div class="border d-flex rounded">
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
+          <label class="form-check-label" for="inlineRadio1">1</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+          <label class="form-check-label" for="inlineRadio2">2</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"
+            disabled>
+          <label class="form-check-label" for="inlineRadio3">3 (disabled)</label>
+        </div>
+      </div>
+
+    </div>
+  </nav>
+
+
+
+  <!-- <div class="container">
+
     <header class="d-flex justify-content-center py-3">
+
       <ul class="nav nav-pills">
+        <li class="nav-item">
+
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
+            <label class="form-check-label" for="inlineRadio1">1</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+            <label class="form-check-label" for="inlineRadio2">2</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"
+              disabled>
+            <label class="form-check-label" for="inlineRadio3">3 (disabled)</label>
+          </div>
+        </li>
         <li class="nav-item"><a href="#" class="nav-link active" aria-current="page">Home</a></li>
         <li class="nav-item"><a href="{{ url_for('recording') }}" class="nav-link">Recording</a></li>
         <li class="nav-item"><a href="#" class="nav-link">Image Processing</a></li>
@@ -94,10 +119,25 @@
         <li class="nav-item"><a href="#" class="nav-link">Settings/Restart</a></li>
       </ul>
     </header>
-  </div>
+  </div> -->
+
+  <ul class="list-group list-group-flush col-sm-2 position-absolute overflow-auto h-100">
+    <!-- <li class="list-group-item"><img src="static/output/1634170119.jpg" ></li> -->
+
+    <li class="list-group-item"><img src="static/output/1634170119.jpg" class="img-fluid" ></li>
+    <li class="list-group-item"><img src="static/output/1634170119.jpg" class="img-fluid" ></li>
+    <li class="list-group-item"><img src="static/output/1634170119.jpg" class="img-fluid" ></li>
+    <li class="list-group-item"><img src="static/output/1634170119.jpg" class="img-fluid" ></li>
+    <li class="list-group-item"><img src="static/output/1634170119.jpg" class="img-fluid" ></li>
+    <li class="list-group-item"><img src="static/output/1634170119.jpg" class="img-fluid" ></li>
+    <li class="list-group-item"><img src="static/output/1634170119.jpg" class="img-fluid" ></li>
+    <li class="list-group-item"><img src="static/output/1634170119.jpg" class="img-fluid" ></li>
+    <li class="list-group-item"><img src="static/output/1634170119.jpg" class="img-fluid" ></li>
+  </ul>
+
 
   <div class="px-4 py-5 my-5 text-center">
-    <img id="video" class="d-block mx-auto mb-4 w-20" src="{{ url_for('web_vis_feed') }}" />
+    <img id="video" class="d-block mx-auto mb-4 w-20 webcam-disp" src="{{ url_for('web_vis_feed') }}" />
     <h1 class="display-5 fw-bold">UAVTASG7 Control Panel</h1>
     <div class="col-lg-6 mx-auto">
       <p class="lead mb-4">Control Panel for </p>
@@ -173,7 +213,7 @@
         datasets: [{
           label: 'Temp',
           // data: [{ x: 1633957352745, y: 0.1 }],
-          data:[],
+          data: [],
           backgroundColor: '#3900990f',
           borderColor: '#390099',
           yAxisID: "other"
@@ -181,7 +221,7 @@
         },
         {
           label: 'Pressure',
-          data:[],
+          data: [],
           backgroundColor: '#6C00790f',
           borderColor: '#6C0079',
           yAxisID: "other"
@@ -189,7 +229,7 @@
         },
         {
           label: 'Humidity',
-          data:[],
+          data: [],
           backgroundColor: '#9E00590f',
           borderColor: '#9E0059',
           yAxisID: "other"
@@ -197,7 +237,7 @@
         },
         {
           label: 'Light',
-          data:[],
+          data: [],
           backgroundColor: '#FF00540f',
           borderColor: '#FF0054',
           yAxisID: "other"
@@ -205,7 +245,7 @@
         },
         {
           label: 'Noise',
-          data:[],
+          data: [],
           backgroundColor: '#FF2A2A0f',
           borderColor: '#FF2A2A',
           yAxisID: "other"
@@ -213,32 +253,32 @@
         },
         {
           label: 'Gas_Reducing',
-          data:[],
+          data: [],
           backgroundColor: '#FF54000f',
           borderColor: '#FF5400',
           yAxisID: "gas"
         },
         {
           label: 'Gas_nh3',
-          data:[],
+          data: [],
           backgroundColor: '#FF89000f',
           borderColor: '#FF8900',
           yAxisID: "gas"
         },
         {
           label: 'Gas_Oxidising',
-          data:[],
+          data: [],
           backgroundColor: '#FFBD000f',
           borderColor: '#FFBD00',
           yAxisID: "gas"
         }
-      ]
+        ]
       },
       options: {
         scales: {
-          yAxis:[
-            {id:"gas"},
-            {id:"other"}
+          yAxis: [
+            { id: "gas" },
+            { id: "other" }
           ],
 
           x: {
@@ -287,7 +327,7 @@
       // const dataObj = {x:data.timestamp, y: data.temperature}
       // chart.data.datasets[0].data.push(dataObj);
       chart.data.datasets.forEach(dataset => {
-        const dataObj = {x: data.timestamp, y: data[dataset.label]};
+        const dataObj = { x: data.timestamp, y: data[dataset.label] };
         dataset.data.push(dataObj);
       });
       chart.update();

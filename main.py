@@ -21,12 +21,12 @@ from settings import DB_NAME
 
 is_production = platform.system() == 'Linux'
 
-# parser = argparse.ArgumentParser(description="My parser")
-# parser.add_argument('--sensor', dest='sensor', action='store_true')
-# args = parser.parse_args()
+parser = argparse.ArgumentParser(description="webserver args")
+parser.add_argument('--sensor', dest='sensor', action='store_true')
+args = parser.parse_args()
 
-# if (is_production and args.sensor):
-if (is_production):
+if (is_production and args.sensor):
+# if (is_production):
     print("using sensor version")
     from sensors import SensorThread, set_diplay_image
 else:
@@ -160,6 +160,7 @@ def clean_output():
         file_path = os.path.join(folder, filename)
         if os.path.isfile(file_path) or os.path.islink(file_path):
             os.unlink(file_path)
+    return 'done'
 
 @app.route('/lcd_mode/<int:mode>')
 def lcd_mode(mode):
