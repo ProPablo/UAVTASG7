@@ -252,6 +252,9 @@
       }
     });
 
+    const lcdModeVal= "{{ lcd_mode }}";
+    console.log({lcdModeVal})
+    $(`input[type=radio][name=lcdMode][value=${lcdModeVal}]`).prop("checked", true);
 
     var term = new Terminal();
     term.open($('#terminal').get(0));
@@ -300,7 +303,9 @@
     $('input[type=radio][name=lcdMode]').change(async function (event) {
       const self = this;
       console.log({ event, self });
-      const res = await fetch(`lcd_mode/${this.value}`);
+      $(`input[type=radio][name=lcdMode]`).prop("disabled", true);
+      const res = await fetch(`set_lcd_mode/${this.value}`);
+      $(`input[type=radio][name=lcdMode]`).prop("disabled", false);
       // if (this.value == 'allot') {
       //   alert("Allot Thai Gayo Bhai");
       // }
