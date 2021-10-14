@@ -65,8 +65,6 @@
 
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-
-
           <a class="nav-link active" aria-current="page" href="#">Home</a>
         </li>
         <li class="nav-item">
@@ -82,45 +80,48 @@
       <div class="border d-flex rounded">
         <div class="form-check form-check-inline">
           <input class="form-check-input" type="radio" name="lcdMode" id="inlineRadio1" value="0">
-          <label class="form-check-label" for="inlineRadio1">1</label>
+          <label class="form-check-label" for="inlineRadio1">0 (IP)</label>
         </div>
         <div class="form-check form-check-inline">
           <input class="form-check-input" type="radio" name="lcdMode" id="inlineRadio2" value="1">
-          <label class="form-check-label" for="inlineRadio2">2</label>
+          <label class="form-check-label" for="inlineRadio2">1 (Temperature)</label>
         </div>
         <div class="form-check form-check-inline">
           <input class="form-check-input" type="radio" name="lcdMode" id="inlineRadio3" value="2">
-          <label class="form-check-label" for="inlineRadio3">3 (disabled)</label>
+          <label class="form-check-label" for="inlineRadio3">2 (Live Feed)</label>
         </div>
       </div>
 
     </div>
   </nav>
 
-  <ul id="hist-img-container" class="list-group list-group-flush col-sm-2 position-absolute overflow-auto h-hist">
-    <!-- <li class="list-group-item"><img src="static/output/1634170119.jpg" ></li> -->
-
+  <!-- cols is out of 12 -->
+  <ul id="hist-img-container" class="list-group list-group-flush col-2 position-absolute overflow-auto h-hist">
     <li class="hist-img-placeholder list-group-item"><img src="static/output/1634170119.jpg" class="img-fluid"></li>
   </ul>
 
+  <div class="offset-2 col-10 border">
 
-  <div class="px-4 py-5 my-5 text-center">
-    <img id="video" class="d-block mx-auto mb-4 w-20 webcam-disp" src="{{ url_for('web_vis_feed') }}" />
-    <h1 class="display-5 fw-bold">UAVTASG7 Control Panel</h1>
-    <div class="col-lg-6 mx-auto">
-      <p class="lead mb-4">Control Panel for </p>
-      <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-        <button id="startRec" type="button" class="btn btn-primary btn-lg px-4 gap-3">Primary button</button>
-        <form method="get" action="{{ url_for('recording') }}">
-          <button id="downlaod" type="submit" class="btn btn-outline-secondary btn-lg px-4">Start Recording</button>
-        </form>
-        <form method="get" action="{{ url_for('get_recording') }}">
-          <button id="downlaod" type="submit" class="btn btn-outline-secondary btn-lg px-4">Get Recording</button>
-        </form>
-        <button id="clear" type="button" class="btn btn-outline-secondary btn-lg px-4">Clear Recordings</button>
+
+
+    <div class="px-4 py-5 my-5 text-center">
+      <img id="video" class="d-block mx-auto mb-4 w-20 webcam-disp" src="{{ url_for('web_vis_feed') }}" />
+      <h1 class="display-5 fw-bold">UAVTASG7 Control Panel</h1>
+      <div class="col-lg-6 mx-auto">
+        <p class="lead mb-4">Control Panel for </p>
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+          <button id="startRec" type="button" class="btn btn-primary btn-lg px-4 gap-3">Primary button</button>
+          <form method="get" action="{{ url_for('recording') }}">
+            <button id="downlaod" type="submit" class="btn btn-outline-secondary btn-lg px-4">Start Recording</button>
+          </form>
+          <form method="get" action="{{ url_for('get_recording') }}">
+            <button id="downlaod" type="submit" class="btn btn-outline-secondary btn-lg px-4">Get Recording</button>
+          </form>
+          <button id="clear" type="button" class="btn btn-outline-secondary btn-lg px-4">Clear Recordings</button>
+        </div>
       </div>
-    </div>
 
+    </div>
     <h1 class="display-5 fw-bold">Sensor Logs</h1>
     <table class="table">
       <thead>
@@ -155,7 +156,6 @@
     <canvas id="chart" width="400" height="400"></canvas>
     <div id="terminal"></div>
   </div>
-
   <script>
 
     async function clearRecordings() {
@@ -252,8 +252,8 @@
       }
     });
 
-    const lcdModeVal= "{{ lcd_mode }}";
-    console.log({lcdModeVal})
+    const lcdModeVal = "{{ lcd_mode }}";
+    console.log({ lcdModeVal })
     $(`input[type=radio][name=lcdMode][value=${lcdModeVal}]`).prop("checked", true);
 
     var term = new Terminal();

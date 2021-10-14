@@ -2,8 +2,8 @@ from threading import Thread
 import time
 from flask_socketio import SocketIO
 import logging
-import ST7735 # LCD
-from bme280 import BME280 # Temperature, Humidity, Pressure
+import ST7735  # LCD
+from bme280 import BME280  # Temperature, Humidity, Pressure
 from enviroplus import gas
 # from enviroplus.noise import Noise
 
@@ -28,7 +28,7 @@ except ImportError:
 try:
     from smbus2 import SMBus
 except ImportError:
-    from smbus import SMBus    
+    from smbus import SMBus
 
 # noise = Noise()
 
@@ -73,7 +73,8 @@ bme280 = BME280(i2c_dev=bus)
 
 # Is this needed
 # gas.enable_adc()
-#as.set_adc_gain(4.096)s
+# as.set_adc_gain(4.096)s
+
 
 def get_cpu_temperature():
     with open("/sys/class/thermal/thermal_zone0/temp", "r") as f:
@@ -81,6 +82,7 @@ def get_cpu_temperature():
         temp = int(temp) / 1000.0
         print(temp)
     return temp
+
 
 def get_ip():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -94,17 +96,20 @@ def get_ip():
         s.close()
     return IP
 
+
 def set_diplay_image(img):
-    #convert to PIL
+    # convert to PIL
     im_pil = Image.fromarray(img)
     im_pil = im_pil.resize((WIDTH, HEIGHT))
     st7735.display(im_pil)
 
 # EDIT: User can choose IP, Temp or Image Display
 # Displays data and text on the 0.96" LCD
+
+
 def display_text(variable, data, unit):
 
-    #Obtain the CPU temperature
+    # Obtain the CPU temperature
     cpu_temp = get_cpu_temperature()
     cpu_message = "CPU Temp: %s C" % cpu_temp
     # Format the variable name and value
@@ -113,7 +118,7 @@ def display_text(variable, data, unit):
     text_colour = (255, 255, 255)
     back_colour = (0, 170, 170)
 
-    draw.rectangle((0,0,160,80), back_colour)
+    draw.rectangle((0, 0, 160, 80), back_colour)
     draw.text((0, 0), message, font=font, fill=text_colour)
     draw.text((0, 12), cpu_message, font=font, fill=text_colour)
 
@@ -125,7 +130,7 @@ def display_text(variable, data, unit):
     st7735.display(img)
 
 
-#through testing determined this is needed because flask needs threads dameonised for stuff to run in background
+# through testing determined this is needed because flask needs threads dameonised for stuff to run in background
 class SensorThread(Thread):
     def __init__(self, socket: SocketIO, db, interval=5,):
         Thread.__init__(self)
@@ -145,7 +150,8 @@ class SensorThread(Thread):
                 temperature = bme280.get_temperature()
                 pressure = bme280.get_pressure()
                 humidity = bme280.get_humidity()
-                gas_readings = gas.read_all() #gas_readings.reducing, gas_readings.nh3, gas_readings.oxidising
+                # gas_readings.reducing, gas_readings.nh3, gas_readings.oxidising
+                gas_readings = gas.read_all()
                 # low, mid, high, amp = noise.get_noise_profile() # What to do with these
                 # dummy_noise = 100 # for SQL testing purposes
                 # logging.info("""Light: {:05.02f} Lux
@@ -153,24 +159,24 @@ class SensorThread(Thread):
                 # Pressure: {:05.2f} hPa
                 # Relative humidity: {:05.2f} %
                 # """.format(lux, temperature, pressure, humidity))
-                
+
                 display_text("Temperature", temperature, "C")
                 timestamp = time.time()*1e3
-                self.sql_create(timestamp, temperature, pressure, humidity, lux, 
-                gas_readings.reducing, gas_readings.nh3, gas_readings.oxidising)
-                payload = {"timestamp": timestamp, 
-                "Temp": temperature,
-                "Pressure": pressure,
-                "Humidity": humidity,
-                "Light": lux,
-                # "Noise": dummy_noise,
-                "Gas_Reducing": gas_readings.reducing,
-                "Gas_nh3": gas_readings.nh3,
-                "Gas_Oxidising": gas_readings.nh3}      
+                self.sql_create(timestamp, temperature, pressure, humidity, lux,
+                                gas_readings.reducing, gas_readings.nh3, gas_readings.oxidising)
+                payload = {"timestamp": timestamp,
+                           "Temp": temperature,
+                           "Pressure": pressure,
+                           "Humidity": humidity,
+                           "Light": lux,
+                           # "Noise": dummy_noise,
+                           "Gas_Reducing": gas_readings.reducing,
+                           "Gas_nh3": gas_readings.nh3,
+                           "Gas_Oxidising": gas_readings.nh3}
                 self.socket.emit("sensor", payload)
             time.sleep(self.interval)
 
-    def sql_create(self, timestamp, temp, pressure, humidity, lux, red, nh3, oxi):        
+    def sql_create(self, timestamp, temp, pressure, humidity, lux, red, nh3, oxi):
         # sql_query = "INSERT INTO Sensor_Data VALUES ('" + str(temp) + "', ' " + str(pressure) + "' , ' " + str(humidity) + "' , ' " + str(lux) + "' , ' " + str(noise) + "' , ' " + str(red) + "' , ' " + str(nh3) + "' , ' " + str(oxi) + "')"
         sql = """INSERT INTO sensor_data(
             timestamp,
@@ -184,5 +190,8 @@ class SensorThread(Thread):
         ) 
         VALUES(?,?,?,?,?,?,?,?)"""
         sql_vals = (timestamp, temp, pressure, humidity, lux, red, nh3, oxi)
-        self.db_conn.execute(sql, sql_vals)
-        self.db_conn.commit()
+        try:
+            self.db_conn.execute(sql, sql_vals)
+            self.db_conn.commit()
+        except:
+            print("failed save due to lock")

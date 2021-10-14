@@ -60,9 +60,12 @@ class WebVisCamera(VideoCamera):
             # threading isnt going to solve that unless we use some kind of threadpool to acually save to disk
             cv2.imwrite(file_path, image)
             # without the trailing comma the param is evaluated as input sequence not tuple
-            self.db_con.execute(
-                "INSERT into images(file) values(?)", (file_path,))
-            self.db_con.commit()
+            try:
+                self.db_con.execute(
+                    "INSERT into images(file) values(?)", (file_path,))
+                self.db_con.commit()
+            except:
+                print("failed save due to lock")
             self.socket.emit("img", file_path, broadcast=True)
             self.socket.emit("img_process", {"aruco": aruco_info, "obj": obj_info})
             self.last_time = time.time()
