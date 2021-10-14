@@ -73,7 +73,7 @@ def init_db():
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', lcd_mode=lcd_mode)
 
 
 @app.route('/recording')
@@ -161,12 +161,13 @@ def clean_output():
             os.unlink(file_path)
     return 'done'
 
-@app.route('/lcd_mode/<int:mode>')
-def lcd_mode(mode):
+@app.route('/set_lcd_mode/<int:mode>')
+def set_lcd_mode(mode):
+    print("changing mode " + str(mode))
     global lcd_mode, s_thread
     lcd_mode = mode
     s_thread.lcd_mode = mode
-    pass
+    return "done"
 # def thing():
 #   while True:
 #     print(time.time())

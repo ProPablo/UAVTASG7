@@ -139,7 +139,7 @@ class SensorThread(Thread):
         # self.db_conn = sqlite3.connect(DB_NAME)
         while True:
             self.counter += 1
-            print(self.db_conn.execute("SELECT count(*) FROM images"))
+            # print(self.db_conn.execute("SELECT count(*) FROM images"))
             # print(self.counter)
             # this blocks other threads completely
             # sql = """INSERT INTO Sensor_Data(timestamp) values(?)"""
