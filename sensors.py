@@ -82,10 +82,6 @@ def get_cpu_temperature():
         print(temp)
     return temp
 
-# Initial Temperature reducing/increasing factor and cpu array
-temperature_factor = 2
-cpu_array = [get_cpu_temperature()] * 5
-
 def get_ip():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
@@ -135,6 +131,10 @@ def display_temp(variable, data, unit):
     draw.text((0, 12), cpu_message, font=font, fill=text_colour)
 
     st7735.display(img)
+
+# Initial Temperature reducing/increasing factor and cpu array
+temperature_factor = 2
+cpu_array = [get_cpu_temperature()] * 5
 
 #through testing determined this is needed because flask needs threads dameonised for stuff to run in background
 class SensorThread(Thread):
