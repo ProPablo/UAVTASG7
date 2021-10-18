@@ -162,21 +162,26 @@ class SensorThread(Thread):
             humidity = bme280.get_humidity()
             gas_readings = gas.read_all() 
 
+            # get individual gas readings and change units
+            reducing = gas_readings.reducing / 1000
+            nh3 = gas_readings.nh3 / 1000
+            oxidising = gas_readings.oxidising / 1000
+
             #adjust the temperature if needed
             temperature = raw_temperature - ((avg_cpu - raw_temperature) / temperature_factor)
 
             # Data to SQlite
             timestamp = time.time()*1e3
             self.sql_create(timestamp, temperature, pressure, humidity, lux, 
-            gas_readings.reducing, gas_readings.nh3, gas_readings.oxidising)
+            reducing, nh3, oxidising)
             payload = {"timestamp": timestamp, 
             "Temp": temperature,
             "Pressure": pressure,
             "Humidity": humidity,
             "Light": lux,
-            "Gas_Reducing": gas_readings.reducing,
-            "Gas_nh3": gas_readings.nh3,
-            "Gas_Oxidising": gas_readings.nh3}      
+            "Gas_Reducing": reducing,
+            "Gas_nh3": nh3,
+            "Gas_Oxidising": oxidising}      
             self.socket.emit("sensor", payload)
 
             # Check to see what to display on the LCD Screen
