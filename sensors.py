@@ -75,6 +75,7 @@ bme280 = BME280(i2c_dev=bus)
 # gas.enable_adc()
 # as.set_adc_gain(4.096)s
 
+# Get the temperature of the CPU
 def get_cpu_temperature():
     with open("/sys/class/thermal/thermal_zone0/temp", "r") as f:
         temp = f.read()
@@ -135,7 +136,8 @@ def display_temp(variable, data, unit):
 # temperature down, and increase to adjust up
 factor = 2.25
 cpu_temps = [get_cpu_temperature()] * 5
-print("CPU TEMP:" + cpu_temps)
+print("cpu")
+print(cpu_temps)
 
 #through testing determined this is needed because flask needs threads dameonised for stuff to run in background
 class SensorThread(Thread):
