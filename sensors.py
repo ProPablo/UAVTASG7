@@ -136,11 +136,10 @@ def display_temp(variable, data, unit):
 # temperature down, and increase to adjust up
 factor = 2.25
 cpu_temps = [get_cpu_temperature()] * 5
-print("cpu")
-print(cpu_temps)
 
 #through testing determined this is needed because flask needs threads dameonised for stuff to run in background
 class SensorThread(Thread):
+    global cpu_temps
     def __init__(self, socket: SocketIO, db, interval=5,):
         Thread.__init__(self)
         self.socket = socket
