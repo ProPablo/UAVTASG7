@@ -79,7 +79,6 @@ def get_cpu_temperature():
     with open("/sys/class/thermal/thermal_zone0/temp", "r") as f:
         temp = f.read()
         temp = int(temp) / 1000.0
-        print(temp)
     return temp
 
 def get_ip():
@@ -132,9 +131,10 @@ def display_temp(variable, data, unit):
 
     st7735.display(img)
 
-# Initial Temperature reducing/increasing factor and cpu array
-temperature_factor = 2
-cpu_array = [get_cpu_temperature()] * 5
+# Tuning factor for compensation. Decrease this number to adjust the
+# temperature down, and increase to adjust up
+factor = 2.25
+cpu_temps = [get_cpu_temperature()] * 5
 
 #through testing determined this is needed because flask needs threads dameonised for stuff to run in background
 class SensorThread(Thread):
@@ -150,14 +150,14 @@ class SensorThread(Thread):
         while True:
 
             #check CPU temperature
-            cpu_temperature = get_cpu_temperature()
-            #for averaging
-            cpu_array =  cpu_array[1:] + [cpu_temperature]
-            avg_cpu = sum(cpu_array) / float(len(cpu_array))
+            cpu_temp = get_cpu_temperature()
+            # Smooth out with some averaging to decrease jitter
+            cpu_temps = cpu_temps[1:] + [cpu_temp]
+            avg_cpu_temp = sum(cpu_temps) / float(len(cpu_temps))
 
             # Get Sensor Data
             lux = ltr559.get_lux()
-            raw_temperature = bme280.get_temperature()
+            raw_temp = bme280.get_temperature()
             pressure = bme280.get_pressure()
             humidity = bme280.get_humidity()
             gas_readings = gas.read_all() 
@@ -168,7 +168,7 @@ class SensorThread(Thread):
             oxidising = gas_readings.oxidising / 1000
 
             #adjust the temperature if needed
-            temperature = raw_temperature - ((avg_cpu - raw_temperature) / temperature_factor)
+            temperature = raw_temp - ((avg_cpu_temp - raw_temp) / factor)
 
             # Data to SQlite
             timestamp = time.time()*1e3
