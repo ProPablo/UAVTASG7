@@ -139,7 +139,7 @@ cpu_temps = [get_cpu_temperature()] * 5
 
 #through testing determined this is needed because flask needs threads dameonised for stuff to run in background
 class SensorThread(Thread):
-    global cpu_temps
+
     def __init__(self, socket: SocketIO, db, interval=5,):
         Thread.__init__(self)
         self.socket = socket
@@ -148,6 +148,7 @@ class SensorThread(Thread):
         self.db_conn = db
 
     def run(self):
+        global cpu_temps
         # self.db_conn = sqlite3.connect(DB_NAME) #needed if making the dbconn in this thread (cant make in init)
         while True:
 
