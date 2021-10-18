@@ -75,7 +75,6 @@ bme280 = BME280(i2c_dev=bus)
 # gas.enable_adc()
 # as.set_adc_gain(4.096)s
 
-
 def get_cpu_temperature():
     with open("/sys/class/thermal/thermal_zone0/temp", "r") as f:
         temp = f.read()
@@ -83,6 +82,9 @@ def get_cpu_temperature():
         print(temp)
     return temp
 
+# Initial Temperature reducing/increasing factor and cpu array
+temperature_factor = 2
+cpu_array = [get_cpu_temperature()] * 5
 
 def get_ip():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -146,26 +148,35 @@ class SensorThread(Thread):
     def run(self):
         # self.db_conn = sqlite3.connect(DB_NAME) #needed if making the dbconn in this thread (cant make in init)
         while True:
-        
+
+            #check CPU temperature
+            cpu_temperature = get_cpu_temperature()
+            #for averaging
+            cpu_array =  cpu_array[1:] + [cpu_temperature]
+            avg_cpu = sum(cpu_array) / float(len(cpu_array))
+
             # Get Sensor Data
             lux = ltr559.get_lux()
-            temperature = bme280.get_temperature()
+            raw_temperature = bme280.get_temperature()
             pressure = bme280.get_pressure()
             humidity = bme280.get_humidity()
-            gas_readings = gas.read_all()
+            gas_readings = gas.read_all() # Divide by 1000 to get to kO
+
+            #adjust the temperature if needed
+            temperature = raw_temperature - ((avg_cpu - raw_temperature) / temperature_factor)
 
             # Data to SQlite
             timestamp = time.time()*1e3
             self.sql_create(timestamp, temperature, pressure, humidity, lux, 
-            gas_readings.reducing, gas_readings.nh3, gas_readings.oxidising)
+            (gas_readings.reducing/1000), (gas_readings.nh3/1000), (gas_readings.oxidising/1000))
             payload = {"timestamp": timestamp, 
             "Temp": temperature,
             "Pressure": pressure,
             "Humidity": humidity,
             "Light": lux,
-            "Gas_Reducing": gas_readings.reducing,
-            "Gas_nh3": gas_readings.nh3,
-            "Gas_Oxidising": gas_readings.nh3}      
+            "Gas_Reducing": (gas_readings.reducing/1000),
+            "Gas_nh3": (gas_readings.nh3/1000),
+            "Gas_Oxidising": (gas_readings.nh3/1000)}      
             self.socket.emit("sensor", payload)
 
             # Check to see what to display on the LCD Screen
