@@ -12,19 +12,27 @@
     crossorigin="anonymous"></script>
 
   <!-- xterm imports -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.js"
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.js"
     integrity="sha512-2PRgAav8Os8vLcOAh1gSaDoNLe1fAyq8/G3QSdyjFFD+OqNjLeHE/8q4+S4MEZgPsuo+itHopj+hJvqS8XUQ8A=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.css"
     integrity="sha512-iLYuqv+v/P4u9erpk+KM83Ioe/l7SEmr7wB6g+Kg1qmEit8EShDKnKtLHlv2QXUp7GGJhmqDI+1PhJYLTsfb8w=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <!-- xterm imports -->
+    crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.5.0/lib/xterm-addon-fit.min.js"></script> -->
+
+
+  <script src="https://cdn.jsdelivr.net/npm/xterm@4.14.1/lib/xterm.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@4.14.1/css/xterm.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.5.0/lib/xterm-addon-fit.min.js"></script>
+
+
+
+  <!-- sockeio imports -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
     integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
     crossorigin="anonymous"></script>
 
   <!-- chartjs includes -->
-  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script> -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
   <script
     src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
@@ -35,19 +43,43 @@
     /* @import "https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"; */
 
     .webcam-disp {
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-      width: 35%
+      object-fit: contain;
     }
 
     .hist-img-placeholder {
-      /* visibility: hidden; */
       display: none;
     }
 
-    .h-hist {
+    /* .disabled-chart {
+      display: none !important;
+    } */
+
+    /* .chart {
+      width: 100%;
+    } */
+
+    .h-90 {
       height: 90%
+    }
+
+    .h-80 {
+      height: 80%;
+    }
+
+    .h-20 {
+      height: 20%;
+    }
+
+    .h-70 {
+      height: 70%;
+    }
+
+    .h-30 {
+      height: 30%;
+    }
+
+    .h-10 {
+      height: 10%;
     }
   </style>
 </head>
@@ -58,21 +90,19 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">UAVTASG7 Control Panel</a>
-      <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent"> -->
 
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="#">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Settings/Restart</a>
+          <a href="{{ url_for('recording') }}" class="nav-link">Archive</a>
         </li>
-
         <li class="nav-item">
           <a href="{{ url_for('recording') }}" class="nav-link">Recording</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Settings/Restart</a>
         </li>
       </ul>
 
@@ -96,16 +126,66 @@
   </nav>
 
   <!-- cols is out of 12 -->
-  <ul id="hist-img-container" class="list-group list-group-flush col-2 position-absolute overflow-auto h-hist">
+  <ul id="hist-img-container" class="list-group list-group-flush col-2 position-absolute overflow-auto h-90">
     <li class="hist-img-placeholder list-group-item"><img src="static/output/1634170119.jpg" class="img-fluid"></li>
   </ul>
 
-  <div class="offset-2 col-10 border">
+  <div class="offset-2 col-10 border container">
+    <div class="h-90">
+      <div class="h-70 row border border-primary">
 
-
+        <div class="col">
+          <h1 class="display-5 fw-bold text-center">Live Feed</h1>
+          <img id="video" class="d-block mx-auto img-fluid webcam-disp" src="{{ url_for('web_vis_feed') }}" />
+          <p class="lead mb-4">Currently Detected: </p>
+        </div>
+        <div class="col">
+          <div class="h-10">
+            <ul id="chart-link-container" class="nav nav-tabs">
+              <li id="Temp" class="nav-item">
+                <a class="nav-link active" href="#">Temperature</a>
+              </li>
+              <li id="Pressure" class="nav-item">
+                <a class="nav-link" href="#">Pressure</a>
+              </li>
+              <li id="Gas" class="nav-item">
+                <a class="nav-link" href="#">Gas</a>
+              </li>
+            </ul>
+          </div>
+          <div class="h-90">
+            <!-- Width and height are only for aspect ratio -->
+            <canvas id="chart" width="50" height="32"></canvas>
+            <!-- <canvas id="Pressure" class="disabled-chart chart" width="400" height="400"></canvas> -->
+          </div>
+        </div>
+      </div>
+      <div class="h-30 row border border-secondary">
+        <div class="col-8 h-100" id="terminal"></div>
+        <div class="col">
+          <h4 class="display-10 fw-bold">Sensor Logs</h1>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Measurement</th>
+                  <th scope="col">Value</th>
+                  <th scope="col">Units</th>
+                </tr>
+              </thead>
+              <tbody id="sensor-body">
+                <tr id="Temp">
+                  <th scope="row">Temp</th>
+                  <td>Not Set</td>
+                  <td>C</td>
+                </tr>
+              </tbody>
+            </table>
+        </div>
+      </div>
+    </div>
 
     <div class="px-4 py-5 my-5 text-center">
-      <img id="video" class="d-block mx-auto mb-4 w-20 webcam-disp" src="{{ url_for('web_vis_feed') }}" />
+
       <h1 class="display-5 fw-bold">UAVTASG7 Control Panel</h1>
       <div class="col-lg-6 mx-auto">
         <p class="lead mb-4">Control Panel for </p>
@@ -122,41 +202,14 @@
       </div>
 
     </div>
-    <h1 class="display-5 fw-bold">Sensor Logs</h1>
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">Timestamp</th>
-          <th scope="col">First</th>
-          <th scope="col">Last</th>
-          <th scope="col">Handle</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th scope="row">1</th>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td>
-        </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>Jacob</td>
-          <td>Thornton</td>
-          <td>@fat</td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td colspan="2">Larry the Bird</td>
-          <td>@twitter</td>
-        </tr>
-      </tbody>
-    </table>
 
-    <canvas id="chart" width="400" height="400"></canvas>
-    <div id="terminal"></div>
+    <!-- <canvas id="chart" width="400" height="400"></canvas> -->
   </div>
   <script>
+
+
+
+
 
     async function clearRecordings() {
       const res = await fetch("{{ url_for('clean_output') }}");
@@ -167,12 +220,22 @@
       //Replacing the video stream with a new one bugs thigns out, it is prefered to just navigate to new page
       // $("#video").attr("src", "{{ url_for('recording_feed') }}");
       // $("#video").remove();
-
     }
 
-    // $("#startRec").on('click', onStartRec);
-    // $("#stopRec").on("click", onStopRec);
     $("#clear").on('click', clearRecordings);
+
+    var chartColours = {
+      'Temp': '#390099',
+      'Pressure': '#6C0079',
+      'Humidity': '#6C0079',
+      'Light': '#FF0054',
+      'Gas_Reducing': '#FF5400',
+      'Gas_nh3': '#FF8900',
+      'Gas_Oxidising': '#FFBD00',
+      trans: function (colour) {
+        return `${this[colour]}0f`;
+      }
+    }
 
     var ctx = $("#chart").get(0).getContext('2d');
     var chart = new Chart(ctx, {
@@ -182,65 +245,84 @@
           label: 'Temp',
           // data: [{ x: 1633957352745, y: 0.1 }],
           data: [],
-          backgroundColor: '#3900990f',
-          borderColor: '#390099',
-          yAxisID: "other"
-
+          backgroundColor: chartColours.trans('Temp'),
+          borderColor: chartColours.Temp,
+          yAxisID: "other",
+          hidden: true
         },
         {
           label: 'Pressure',
           data: [],
-          backgroundColor: '#6C00790f',
-          borderColor: '#6C0079',
-          yAxisID: "other"
-
+          backgroundColor: chartColours.trans('Pressure'),
+          borderColor: chartColours.Pressure,
+          yAxisID: "other",
+          hidden: true
         },
         {
           label: 'Humidity',
           data: [],
-          backgroundColor: '#9E00590f',
-          borderColor: '#9E0059',
-          yAxisID: "other"
-
+          backgroundColor: chartColours.trans('Humidity'),
+          borderColor: chartColours.Humidity,
+          yAxisID: "other",
+          hidden: true
         },
         {
           label: 'Light',
           data: [],
-          backgroundColor: '#FF00540f',
-          borderColor: '#FF0054',
-          yAxisID: "other"
+          backgroundColor: chartColours.trans('Light'),
+          borderColor: chartColours.Light,
+          yAxisID: "other",
+          hidden: true
 
         },
         {
           label: 'Gas_Reducing',
           data: [],
-          backgroundColor: '#FF54000f',
-          borderColor: '#FF5400',
-          yAxisID: "gas"
+          backgroundColor: chartColours.trans('Gas_Reducing'),
+          borderColor: chartColours.Gas_Reducing,
+          yAxisID: "other",
+          hidden: true
+
         },
         {
           label: 'Gas_nh3',
           data: [],
-          backgroundColor: '#FF89000f',
-          borderColor: '#FF8900',
-          yAxisID: "gas"
+          backgroundColor: chartColours.trans('Gas_nh3'),
+          borderColor: chartColours.Gas_nh3,
+          yAxisID: "Gas_nh3",
+          hidden: true
+
         },
         {
           label: 'Gas_Oxidising',
           data: [],
-          backgroundColor: '#FFBD000f',
-          borderColor: '#FFBD00',
-          yAxisID: "gas"
+          backgroundColor: chartColours.trans('Gas_Oxidising'),
+          borderColor: chartColours.Gas_Oxidising,
+          yAxisID: "Gas_Oxidising",
+          hidden: true
+
         }
         ]
       },
       options: {
         scales: {
-          yAxis: [
-            { id: "gas" },
-            { id: "other" }
-          ],
-
+          other: {
+            type: 'linear',
+            position: 'left',
+            display: true
+          },
+          Gas_nh3: {
+            backgroundColor: chartColours.trans('Gas_nh3'),
+            type: 'linear',
+            position: 'right',
+            display: false
+          },
+          Gas_Oxidising: {
+            backgroundColor: chartColours.trans('Gas_Oxidising'),
+            type: 'linear',
+            position: 'right',
+            display: false
+          },
           x: {
             type: 'time',
             time: {
@@ -249,8 +331,43 @@
             }
           }
         }
-      }
+      },
+      responsive: true,
+      maintainAspectRatio: true
     });
+
+    let currentlyEnabledID = $("#chart-link-container > li").has('a.active').attr('id');
+    chart.data.datasets.find(d => d.label == currentlyEnabledID).hidden = false;
+
+    $('#chart-link-container > li').each((ind, el) => {
+      const id = $(el).attr('id');
+      $(el).children('a').eq(0).on('click', (event) => {
+        console.log(event.target, id, "stuff");
+
+        // chart.data.datasets[0].hidden = true;
+
+        chart.data.datasets.forEach(dataset => {
+          if (id == "Gas" && dataset.label.startsWith('Gas')) dataset.hidden = false;
+          else if (id == dataset.label) dataset.hidden = false;
+          else dataset.hidden = true;
+        });
+
+        if (id == "Gas") {
+          chart.options.scales.Gas_nh3.display = true;
+          chart.options.scales.Gas_Oxidising.display = true;
+        }
+        else {
+          chart.options.scales.Gas_nh3.display = false;
+          chart.options.scales.Gas_Oxidising.display = false;
+        }
+        chart.update();
+
+        $('#chart-link-container > li > a').toggleClass('active', false);
+        $(event.target).toggleClass('active', true);
+
+      })
+    });
+
 
     const lcdModeVal = "{{ lcd_mode }}";
     console.log({ lcdModeVal })
@@ -258,6 +375,9 @@
 
     var term = new Terminal();
     term.open($('#terminal').get(0));
+    const fitAddon = new FitAddon.FitAddon();
+    term.loadAddon(fitAddon);
+    fitAddon.fit();
     // term.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')
     term.onData(data => {
       //Does not detect enter key
@@ -273,32 +393,42 @@
     socket.on('connect', function () {
       socket.send("connecting");
     });
+
     socket.on('event', (data) => {
       console.log(data);
       term.write(`server_event: ${JSON.stringify(data)}\r\n`);
     })
-    socket.on('img', (uri) => {
-      term.write(`image_event:${uri}\r\n`);
+
+    socket.on('img', (data) => {
+      const uri = data.file_path;
+      term.write(`image_event:${JSON.stringify(data)}\r\n`);
       const clonedHolder = $(".hist-img-placeholder").clone().appendTo("#hist-img-container").removeClass("hist-img-placeholder")
       const img = clonedHolder.find('img');
       img.attr("src", uri);
       $("#hist-img-container").animate({ scrollTop: clonedHolder.offset().top }, 500);
     })
 
-    socket.on('img_process', (data) => {
-      term.write(`process_event:${JSON.stringify(data)}\r\n`)
-    })
-
     socket.on('sensor', (data) => {
       term.write(`sensor_event:${JSON.stringify(data)}\r\n`)
-      // const dataObj = {x:data.timestamp, y: data.temperature}
-      // chart.data.datasets[0].data.push(dataObj);
       chart.data.datasets.forEach(dataset => {
         const dataObj = { x: data.timestamp, y: data[dataset.label] };
         dataset.data.push(dataObj);
       });
       chart.update();
+
+      $("tbody#sensor-body").children('tr').each((ind, el) => {
+        // const id = $(this).attr('id');  //IMPORTANT: THIS WILL NOT WORK WITH ARROW SYNTAX DUE TO LEXICAL THIS IN ARROW FUNCTIONS
+        const id = $(el).attr('id');
+        $(this).children('td').eq(0).text(data[id]);
+      })
     })
+
+    socket.on('testdata', (data) => {
+      term.write(`testdata_event:${JSON.stringify(data)}\r\n`)
+      const dataObj = { x: data.timestamp, y: data.data };
+      chart.data.datasets[0].data.push(dataObj);
+      chart.update();
+    });
 
     $('input[type=radio][name=lcdMode]').change(async function (event) {
       const self = this;
@@ -306,12 +436,6 @@
       $(`input[type=radio][name=lcdMode]`).prop("disabled", true);
       const res = await fetch(`set_lcd_mode/${this.value}`);
       $(`input[type=radio][name=lcdMode]`).prop("disabled", false);
-      // if (this.value == 'allot') {
-      //   alert("Allot Thai Gayo Bhai");
-      // }
-      // else if (this.value == 'transfer') {
-      //   alert("Transfer Thai Gayo");
-      // }
     });
 
   </script>
