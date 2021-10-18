@@ -66,8 +66,8 @@ class WebVisCamera(VideoCamera):
                 self.db_con.commit()
             except:
                 print("failed save due to lock")
-            self.socket.emit("img", file_path, broadcast=True)
-            self.socket.emit("img_process", {"aruco": aruco_info, "obj": obj_info})
+            # self.socket.emit("img", file_path)
+            self.socket.emit("img", {"aruco": aruco_info, "obj": obj_info, "file_path": file_path})
             self.last_time = time.time()
 
         return image
@@ -148,5 +148,5 @@ class SensorThread(Thread):
             # sql = """INSERT INTO Sensor_Data(timestamp) values(?)"""
             # self.db_conn.execute(sql, (time.time(),))
             self.socket.emit(
-                "sensor", {"time": time.time()*1e3, "counter": self.counter, "data": random.random()})
+                "testdata", {"timestamp": time.time()*1e3, "counter": self.counter, "data": random.random()})
             time.sleep(self.interval)
