@@ -77,6 +77,12 @@
     .h-30 {
       height: 30%;
     }
+    .h-40 {
+      height: 40%;
+    }
+    .h-60 {
+      height: 60%;
+    }
 
     .h-10 {
       height: 10%;
@@ -106,7 +112,14 @@
         </li>
       </ul>
 
-      <button id="" type="button" class="btn btn-primary btn-lg px-4 gap-3" >Test</button>
+      <!-- <button id="" type="button" class="btn btn-primary btn-lg px-4 gap-3" >Test</button> -->
+
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+        <label class="form-check-label" for="defaultCheck1">
+          Enable Speech
+        </label>
+      </div>
 
       <label>LCD Mode Select:</label>
       <div class="border d-flex rounded">
@@ -139,12 +152,12 @@
     <div class="h-90">
       <div class="h-70 row border border-primary">
 
-        <div class="col">
+        <div class="col border border-primary">
           <h1 class="display-5 fw-bold text-center">Live Feed</h1>
           <img id="video" class="d-block mx-auto img-fluid webcam-disp" src="{{ url_for('web_vis_feed') }}" />
           <p class="lead mb-4">Currently Detected: </p>
         </div>
-        <div class="col">
+        <div class="col border border-primary">
           <div class="h-10">
             <ul id="chart-link-container" class="nav nav-tabs">
               <li id="Temp" class="nav-item">
@@ -165,11 +178,11 @@
           </div>
         </div>
       </div>
-      <div class="h-30 row border border-secondary">
+      <div class="h-30 row">
         <div class="col-8 h-100" id="terminal"></div>
         <div class="col">
-          <h4 class="display-10 fw-bold">Sensor Logs</h1>
-            <table class="table">
+          <h5 class="fw-bold text-center">Sensor Logs</h5>
+            <table class="table table-bordered table-sm">
               <thead>
                 <tr>
                   <th scope="col">Sensor</th>
@@ -219,39 +232,11 @@
       </div>
     </div>
 
-    <div class="px-4 py-5 my-5 text-center">
 
-      <h1 class="display-5 fw-bold">UAVTASG7 Control Panel</h1>
-      <div class="col-lg-6 mx-auto">
-        <p class="lead mb-4">Control Panel for </p>
-        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-          <button id="startRec" type="button" class="btn btn-primary btn-lg px-4 gap-3">Primary button</button>
-          <form method="get" action="{{ url_for('recording') }}">
-            <button id="downlaod" type="submit" class="btn btn-outline-secondary btn-lg px-4">Start Recording</button>
-          </form>
-          <form method="get" action="{{ url_for('get_recording') }}">
-            <button id="downlaod" type="submit" class="btn btn-outline-secondary btn-lg px-4">Get Recording</button>
-          </form>
-          <button id="clear" type="button" class="btn btn-outline-secondary btn-lg px-4">Clear Recordings</button>
-        </div>
-      </div>
-
-    </div>
   </div>
   <script>
 
-    async function clearRecordings() {
-      const res = await fetch("{{ url_for('clean_output') }}");
-    }
-
-    async function onStartRec() {
-      console.log("starting recording...");
-      //Replacing the video stream with a new one bugs thigns out, it is prefered to just navigate to new page
-      // $("#video").attr("src", "{{ url_for('recording_feed') }}");
-      // $("#video").remove();
-    }
-
-    $("#clear").on('click', clearRecordings);
+   
 
     var chartColours = {
       'Temp': '#390099',

@@ -108,6 +108,10 @@ def index():
 def recording():
     return render_template('recording.html')
 
+@app.route('/settings')
+def recording_panel():
+    return render_template('settings.html')
+
 
 def gen(camera):
     while True:
