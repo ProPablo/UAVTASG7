@@ -106,6 +106,8 @@
         </li>
       </ul>
 
+      <button id="" type="button" class="btn btn-primary btn-lg px-4 gap-3" >Test</button>
+
       <label>LCD Mode Select:</label>
       <div class="border d-flex rounded">
         <div class="form-check form-check-inline">
@@ -127,7 +129,10 @@
 
   <!-- cols is out of 12 -->
   <ul id="hist-img-container" class="list-group list-group-flush col-2 position-absolute overflow-auto h-90">
-    <li class="hist-img-placeholder list-group-item"><img src="static/output/1634170119.jpg" class="img-fluid"></li>
+    <li class="hist-img-placeholder list-group-item">
+      <img src="static/output/1634170119.jpg" tabindex="0" class="img-fluid" data-bs-toggle="popover"
+        title="Popover title" data-bs-content="And here's some amazing content. It's very engaging. Right?">
+    </li>
   </ul>
 
   <div class="offset-2 col-10 border container-fluid">
@@ -234,10 +239,6 @@
     </div>
   </div>
   <script>
-
-
-
-
 
     async function clearRecordings() {
       const res = await fetch("{{ url_for('clean_output') }}");
@@ -427,13 +428,37 @@
       term.write(`server_event: ${JSON.stringify(data)}\r\n`);
     })
 
+
+    function sayObjects(objs) {
+      var ar = ""
+
+      const speechString = objs.reduce((acc, val, ind) => {
+        if (ind === objs.length - 1) return acc + val;
+        else return acc + val + " and "
+      }, "");
+
+      let speech = new SpeechSynthesisUtterance();
+      speech.text = speechString;
+      var voices = window.speechSynthesis.getVoices();
+      speech.voice = voices[0];
+      window.speechSynthesis.speak(speech);
+    }
+
     socket.on('img', (data) => {
       const uri = data.file_path;
       term.write(`image_event:${JSON.stringify(data)}\r\n`);
       const clonedHolder = $(".hist-img-placeholder").clone().appendTo("#hist-img-container").removeClass("hist-img-placeholder")
       const img = clonedHolder.find('img');
+      var popover = new bootstrap.Popover(img, {
+        trigger: 'focus'
+      });
+
       img.attr("src", uri);
       $("#hist-img-container").animate({ scrollTop: clonedHolder.offset().top }, 500);
+
+      const objs = [...data.obj.map((o) => o.name), ...data.aruco.map(a => `aruco ${a}`)]
+      sayObjects(objs);
+
     })
 
     socket.on('sensor', (data) => {

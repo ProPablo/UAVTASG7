@@ -158,8 +158,9 @@ def compute_recognition(image: np.ndarray) -> Tuple[np.ndarray, List[str]]:
             # Print info
             info = 'Object ' + str(i) + ': ' + object_name + \
                 ' at (' + str(xcenter) + ', ' + str(ycenter) + ')'
+            object_info = {"name": object_name, "score": int(scores[i] * 100)}
             print(info)
-            detected.append(info)
+            detected.append(object_info)
     # pass multiple possible objects
     # info = "stuff"
     return frame, detected

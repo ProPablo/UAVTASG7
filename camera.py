@@ -9,6 +9,7 @@ from objdetect_funcs import compute_recognition
 from arucodetect_funcs import aruco_detect
 import random
 from settings import DB_NAME
+import settings
 import sqlite3
 
 
@@ -32,7 +33,7 @@ class VideoCamera(object):
 
 
 class WebVisCamera(VideoCamera):
-    def __init__(self, socket: SocketIO, db, image_interval=5):
+    def __init__(self, socket: SocketIO, db: Connection, image_interval=5):
         self.socket = socket
         self.db_con = db
         # self.db_con = connect(DB_NAME)
@@ -44,12 +45,14 @@ class WebVisCamera(VideoCamera):
         image = super().get_frame()
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         image, obj_info = compute_recognition(image)
-        obj_info = []
         image, aruco_info = aruco_detect(image)
         # face_rects = face_cascade.detectMultiScale(gray, 1.3, 5)
         # for (x, y, w, h) in face_rects:
         #     cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
         #     break
+
+        # obj_info = ["person", "bagpack"]
+        
         
 
         if (time.time() - self.last_time > self.image_interval):
@@ -61,11 +64,14 @@ class WebVisCamera(VideoCamera):
             cv2.imwrite(file_path, image)
             # without the trailing comma the param is evaluated as input sequence not tuple
             try:
-                self.db_con.execute(
-                    "INSERT into images(file) values(?)", (file_path,))
+                res = self.db_con.execute("INSERT into images(file, timestamp, flight_id) values(?, ?, ?)", (file_path, time.time()*1e3, settings.flight_number))
+                image_id = res.lastrowid
+                for obj in obj_info:
+                    self.db_con.execute("INSERT into objects(name, score, image_id) values(?,?,?)",
+                    (obj["name"], obj["score"], image_id))
                 self.db_con.commit()
-            except:
-                print("failed save due to lock")
+            except Exception as e:
+                print("failed save due to lock" + str(e))
             # self.socket.emit("img", file_path)
             self.socket.emit("img", {"aruco": aruco_info, "obj": obj_info, "file_path": file_path})
             self.last_time = time.time()

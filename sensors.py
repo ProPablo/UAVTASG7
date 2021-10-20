@@ -17,6 +17,7 @@ import socket
 import numpy as np
 import sqlite3
 from settings import DB_NAME
+import settings
 
 try:
     # Transitional fix for breaking change in LTR559
@@ -146,6 +147,7 @@ class SensorThread(Thread):
         self.interval = interval
         self.lcd_mode = 0
         self.db_conn = db
+        self.flight_id = settings.flight_number
 
     def run(self):
         global cpu_temps
@@ -209,10 +211,11 @@ class SensorThread(Thread):
             light,
             gas_reducing,
             gas_nh3,
-            gas_oxidising
+            gas_oxidising,
+            flight_id
         ) 
-        VALUES(?,?,?,?,?,?,?,?)"""
-        sql_vals = (timestamp, temp, pressure, humidity, lux, red, nh3, oxi)
+        VALUES(?,?,?,?,?,?,?,?,?)"""
+        sql_vals = (timestamp, temp, pressure, humidity, lux, red, nh3, oxi, self.flight_id)
         try:
             self.db_conn.execute(sql, sql_vals)
             self.db_conn.commit()

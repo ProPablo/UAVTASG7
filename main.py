@@ -17,9 +17,10 @@ import platform
 from flask_socketio import SocketIO, send, emit
 import sqlite3
 from settings import DB_NAME
-
+import settings
 
 is_production = platform.system() == 'Linux'
+# is_production = True
 
 parser = argparse.ArgumentParser(description="webserver args")
 parser.add_argument('--sensor', dest='sensor', action='store_true')
@@ -51,9 +52,33 @@ recording_thread = None
 
 def init_db():
     # Connect or Create DB File
+    flights_sql = """CREATE TABLE IF NOT EXISTS flights
+    (
+      id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+      start_time REAL NOT NULL
+    )
+    """
+    con.execute(flights_sql)
+
     images_sql = '''CREATE TABLE IF NOT EXISTS images
-                (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, file TEXT)'''
+                (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                file TEXT,
+                timestamp REAL NOT NULL,
+                flight_id INTEGER NOT NULL,
+                FOREIGN KEY (flight_id) REFERENCES flights (id)
+                )'''
     con.execute(images_sql)
+
+    objects_sql = '''CREATE TABLE IF NOT EXISTS objects
+    (
+        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        name TEXT,
+        score INTEGER,
+        image_id INTEGER NOT NULL,
+        FOREIGN KEY (image_id) REFERENCES images(id)
+    )
+    '''
+    con.execute(objects_sql)
 
     sensor_sql = """
     CREATE TABLE IF NOT EXISTS 'sensor_data' (
@@ -65,9 +90,13 @@ def init_db():
         'light' REAL NOT NULL,
         'gas_reducing' REAL NOT NULL,
         'gas_nh3' REAL NOT NULL,
-        'gas_oxidising' REAL NOT NULL);
+        'gas_oxidising' REAL NOT NULL,
+        flight_id INTEGER NOT NULL,
+        FOREIGN KEY (flight_id) REFERENCES flights (id)
+    )
     """
     con.execute(sensor_sql)
+    con.commit()
 
 
 @app.route('/')
@@ -167,6 +196,11 @@ def set_lcd_mode(mode):
     lcd_mode = mode
     s_thread.lcd_mode = mode
     return "done"
+
+@app.route('/ping')
+def ping():
+    # settings.flight_number = -1
+    return "pong"
 # def thing():
 #   while True:
 #     print(time.time())
@@ -176,9 +210,9 @@ def set_lcd_mode(mode):
 if __name__ == '__main__':
     # clean_output()
     # app.run(host='0.0.0.0', debug=True)
-    # is_production = True
     init_db()
-
+    settings.start_flight(con)
+    
     if (is_production):
         print("On Pi" + str(is_production))
 
