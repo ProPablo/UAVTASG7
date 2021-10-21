@@ -1,4 +1,5 @@
 <html>
+<!-- NOTE PLEASE ZOOM OUT ONE LVEL ON NON 6 by 9 -->
 
 <head>
   <title>UAVTASG7 Control Panel</title>
@@ -12,20 +13,10 @@
     crossorigin="anonymous"></script>
 
   <!-- xterm imports -->
-  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.js"
-    integrity="sha512-2PRgAav8Os8vLcOAh1gSaDoNLe1fAyq8/G3QSdyjFFD+OqNjLeHE/8q4+S4MEZgPsuo+itHopj+hJvqS8XUQ8A=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.css"
-    integrity="sha512-iLYuqv+v/P4u9erpk+KM83Ioe/l7SEmr7wB6g+Kg1qmEit8EShDKnKtLHlv2QXUp7GGJhmqDI+1PhJYLTsfb8w=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
-  <!-- <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.5.0/lib/xterm-addon-fit.min.js"></script> -->
-
 
   <script src="https://cdn.jsdelivr.net/npm/xterm@4.14.1/lib/xterm.min.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@4.14.1/css/xterm.min.css">
   <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.5.0/lib/xterm-addon-fit.min.js"></script>
-
-
 
   <!-- sockeio imports -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
@@ -166,10 +157,10 @@
 
   <div class="offset-2 col-10 container-fluid">
     <div class="h-90">
-      <div class="h-70 row">
+      <div class=" row" style="height: 65%;">
 
         <div class="col border border-primary">
-          <h3 class="fw-bold text-center">Live Feed</h3>
+          <h6 class="fw-bold text-center">Live Feed</h6>
           <img id="video" class="d-block mx-auto img-fluid" src="{{ url_for('web_vis_feed') }}" />
           <p class="lead mb-4">Currently Detected: </p>
         </div>
@@ -189,12 +180,12 @@
           </div>
           <div class="h-90">
             <!-- Width and height are only for aspect ratio -->
-            <canvas id="chart" width="50" height="30"></canvas>
+            <canvas id="chart" width="50" height="28"></canvas>
             <!-- <canvas id="Pressure" class="disabled-chart chart" width="400" height="400"></canvas> -->
           </div>
         </div>
       </div>
-      <div class="h-30 row">
+      <div class="row" style="height: 35%;">
         <div class="col-8 h-100" id="terminal"></div>
         <div class="col">
           <h5 class="fw-bold text-center">Sensor Logs</h5>
@@ -473,7 +464,7 @@
       $("tbody#sensor-body").children('tr').each((ind, el) => {
         // const id = $(this).attr('id');  //IMPORTANT: THIS WILL NOT WORK WITH ARROW SYNTAX DUE TO LEXICAL THIS IN ARROW FUNCTIONS
         const id = $(el).attr('id');
-        $(this).children('td').eq(0).text(data[id]);
+        $(el).children('td').eq(0).text(data[id]);
       })
     })
 
