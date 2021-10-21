@@ -203,7 +203,7 @@
                   <th scope="col">Unit</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody id="sensor-body">
                 <tr id="Temp">
                   <th scope="row">Temperature</th>
                   <td>Data</td>
@@ -470,7 +470,7 @@
       $("tbody#sensor-body").children('tr').each((ind, el) => {
         // const id = $(this).attr('id');  //IMPORTANT: THIS WILL NOT WORK WITH ARROW SYNTAX DUE TO LEXICAL THIS IN ARROW FUNCTIONS
         const id = $(el).attr('id');
-        $(el).children('td').eq(0).text(data[id]);
+        $(el).children('td').eq(0).text(data[id].toFixed(3));
       })
     })
 
