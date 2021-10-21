@@ -192,7 +192,7 @@ class SensorThread(Thread):
             # Check to see what to display on the LCD Screen
             if(self.lcd_mode == 2):
                 # Display Vid on LCD
-                continue
+                pass
             elif(self.lcd_mode == 0):
                 # Display IP
                 display_ip()
