@@ -3,12 +3,14 @@ from sqlite3 import Connection, connect
 
 
 DB_NAME ="UAV.db"
-flight_number = 0;
+flight_number = 0
 
 def start_flight(con: Connection):
     global flight_number
-    res = con.execute("INSERT into flights(start_time) values(?) RETURNING *", (time.time()*1e3, ))
-    flight_number = res.fetchone()[0]
+    # res = con.execute("INSERT into flights(start_time) values(?) RETURNING *", (time.time()*1e3, ))
+    # flight_number = res.fetchone()[0]
+    res = con.execute("INSERT into flights(start_time) values(?)", (time.time()*1e3, ))
+    flight_number= res.lastrowid
     con.commit()
 
 def do(con):
