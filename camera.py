@@ -11,9 +11,11 @@ import random
 from settings import DB_NAME
 import settings
 import sqlite3
+import os
 
 
-face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_alt2.xml")
+# face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_alt2.xml")
+face_cascade = cv2.CascadeClassifier( " .xml" )
 ds_factor = 0.6
 
 
@@ -46,10 +48,11 @@ class WebVisCamera(VideoCamera):
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         image, obj_info = compute_recognition(image)
         image, aruco_info = aruco_detect(image)
-        # face_rects = face_cascade.detectMultiScale(gray, 1.3, 5)
-        # for (x, y, w, h) in face_rects:
-        #     cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
-        #     break
+
+        face_rects = face_cascade.detectMultiScale(gray, 1.3, 5)
+        for (x, y, w, h) in face_rects:
+            cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
+            break
 
         # obj_info = ["person", "bagpack"]
         
