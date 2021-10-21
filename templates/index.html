@@ -50,6 +50,11 @@
       display: none;
     }
 
+    .table-condensed {
+      font-size: 10px;
+      margin-bottom: 0 !important;
+    }
+
     /* .disabled-chart {
       display: none !important;
     } */
@@ -77,15 +82,26 @@
     .h-30 {
       height: 30%;
     }
+
     .h-40 {
       height: 40%;
     }
+
     .h-60 {
       height: 60%;
     }
 
     .h-10 {
       height: 10%;
+    }
+
+    .table-condensed>thead>tr>th,
+    .table-condensed>tbody>tr>th,
+    .table-condensed>tfoot>tr>th,
+    .table-condensed>thead>tr>td,
+    .table-condensed>tbody>tr>td,
+    .table-condensed>tfoot>tr>td {
+      padding: 5px;
     }
   </style>
 </head>
@@ -148,13 +164,13 @@
     </li>
   </ul>
 
-  <div class="offset-2 col-10 border container-fluid">
+  <div class="offset-2 col-10 container-fluid">
     <div class="h-90">
-      <div class="h-70 row border border-primary">
+      <div class="h-70 row">
 
         <div class="col border border-primary">
-          <h1 class="display-5 fw-bold text-center">Live Feed</h1>
-          <img id="video" class="d-block mx-auto img-fluid webcam-disp" src="{{ url_for('web_vis_feed') }}" />
+          <h3 class="fw-bold text-center">Live Feed</h3>
+          <img id="video" class="d-block mx-auto img-fluid" src="{{ url_for('web_vis_feed') }}" />
           <p class="lead mb-4">Currently Detected: </p>
         </div>
         <div class="col border border-primary">
@@ -179,7 +195,7 @@
           </div>
           <div class="h-90">
             <!-- Width and height are only for aspect ratio -->
-            <canvas id="chart" width="50" height="32"></canvas>
+            <canvas id="chart" width="50" height="30"></canvas>
             <!-- <canvas id="Pressure" class="disabled-chart chart" width="400" height="400"></canvas> -->
           </div>
         </div>
@@ -188,7 +204,7 @@
         <div class="col-8 h-100" id="terminal"></div>
         <div class="col">
           <h5 class="fw-bold text-center">Sensor Logs</h5>
-            <table class="table table-bordered table-sm">
+            <table class="table table-bordered table-sm table-condensed">
               <thead>
                 <tr>
                   <th scope="col">Sensor</th>
@@ -242,7 +258,7 @@
   </div>
   <script>
 
-   
+
 
     var chartColours = {
       'Temp': '#390099',
