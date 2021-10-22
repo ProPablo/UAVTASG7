@@ -12,6 +12,7 @@ from settings import DB_NAME
 import settings
 import sqlite3
 import os
+import db_queue
 
 
 # face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_alt2.xml")
@@ -64,22 +65,26 @@ class WebVisCamera(VideoCamera):
             # threading isnt going to solve that unless we use some kind of threadpool to acually save to disk
             cv2.imwrite(file_path, image)
             # without the trailing comma the param is evaluated as input sequence not tuple
-            try:
-                res = self.db_con.execute("INSERT into images(file, timestamp, flight_id) values(?, ?, ?)", (
-                    file_path, time.time()*1e3, settings.flight_number))
-                image_id = res.lastrowid
-                for obj in obj_info:
-                    self.db_con.execute("INSERT into objects(name, score, image_id) values(?,?,?)",
-                                        (obj["name"], obj["score"], image_id))
-                self.db_con.commit()
-            except Exception as e:
-                print("failed save due to lock" + str(e))
+                        
             # self.socket.emit("img", file_path)
-            self.socket.emit(
-                "img", {"aruco": aruco_info, "obj": obj_info, "file_path": file_path})
+            # self.socket.emit(
+            #     "img", {"aruco": aruco_info, "obj": obj_info, "file_path": file_path, "timestamp": time.time()*1e3})
+            data = {"aruco": aruco_info, "obj": obj_info, "file_path": file_path, "timestamp": time.time()*1e3}
+            job = db_queue.Job(make_img_save, "img", data)
+            db_queue.q.put(job)
+            
             self.last_time = time.time()
 
         return image
+
+def make_img_save(self, con):
+    img_data = (self.data['file_path'], self.data['timestamp'], settings.flight_number)
+    con.execute('begin')
+    res = con.execute("INSERT into images(file, timestamp, flight_id) values(?, ?, ?)", img_data)
+    image_id = res.lastrowid
+    for obj in self.data['obj']:
+        con.execute("INSERT into objects(name, score, image_id) values(?,?,?)", (obj["name"], obj["score"], image_id))
+    con.execute('commit')    
 
 
 class RecordingCam(VideoCamera):
