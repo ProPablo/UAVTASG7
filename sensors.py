@@ -230,6 +230,5 @@ def sql_create(self, con):
                 self.data["Light"], self.data["Gas_Reducing"], self.data["Gas_nh3"], self.data["Gas_Oxidising"], settings.flight_number)
     try:
         con.execute(sql, sql_vals)
-        con.commit()
     except:
         print("failed save due to lock")

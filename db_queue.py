@@ -28,7 +28,7 @@ class QueueWorker(threading.Thread):
     def run(self):
         while True:
             item = q.get()
-            self.con.execute('begin')
+            self.con.execute("begin")
             try:
 
                 item.run_sql(self.con)
