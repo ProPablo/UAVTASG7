@@ -1,6 +1,8 @@
-import threading, queue
+import threading
+import queue
 from sqlite3 import Connection, connect
 from flask_socketio import SocketIO
+
 
 class Job():
     def __init__(self, sql_func, name, data) -> None:
@@ -9,31 +11,38 @@ class Job():
         self.data = data
         print(f"got {name} job")
         pass
+
     def run_sql(self, con):
         self.sql_func(self, con)
 
+
 q = queue.Queue()
 
+
 class QueueWorker(threading.Thread):
-    def __init__(self, db_con:Connection, socket: SocketIO) -> None:
+    def __init__(self, db_con: Connection, socket: SocketIO) -> None:
         threading.Thread.__init__(self)
         self.con = db_con
         self.sock = socket
-    
+
     def run(self):
         while True:
             item = q.get()
+            self.con.execute('begin')
             try:
+
                 item.run_sql(self.con)
                 # self.con.execute("begin")
                 # for i, s in enumerate(item.sqls):
                 #     self.con.execute(s, item.tuples[i])
-                # self.con.execute("commit")
+                self.con.execute("commit")
             except Exception as e:
                 print(e)
+                self.con.execute("rollback")
             self.sock.emit(item.name, item.data)
             q.task_done()
             print(f"Job done: {item.name}")
+
 
 def worker():
     while True:

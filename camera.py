@@ -79,13 +79,10 @@ class WebVisCamera(VideoCamera):
 
 def make_img_save(self, con):
     img_data = (self.data['file_path'], self.data['timestamp'], settings.flight_number)
-    con.execute('begin')
     res = con.execute("INSERT into images(file, timestamp, flight_id) values(?, ?, ?)", img_data)
     image_id = res.lastrowid
     for obj in self.data['obj']:
         con.execute("INSERT into objects(name, score, image_id) values(?,?,?)", (obj["name"], obj["score"], image_id))
-    con.execute('commit')    
-
 
 class RecordingCam(VideoCamera):
     def __init__(self, filename="output/cam_video.mp4"):
