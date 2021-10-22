@@ -15,7 +15,7 @@ import os
 
 
 # face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_alt2.xml")
-face_cascade = cv2.CascadeClassifier( " .xml" )
+face_cascade = cv2.CascadeClassifier("cascade.xml")
 ds_factor = 0.6
 
 
@@ -49,14 +49,12 @@ class WebVisCamera(VideoCamera):
         image, obj_info = compute_recognition(image)
         image, aruco_info = aruco_detect(image)
 
-        face_rects = face_cascade.detectMultiScale(gray, 1.3, 5)
-        for (x, y, w, h) in face_rects:
-            cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
-            break
+        # face_rects = face_cascade.detectMultiScale(gray, 1.3, 5)
+        # for (x, y, w, h) in face_rects:
+        #     cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
+        #     break
 
         # obj_info = ["person", "bagpack"]
-        
-        
 
         if (time.time() - self.last_time > self.image_interval):
             # print("got stuff" + stuff)
@@ -67,16 +65,18 @@ class WebVisCamera(VideoCamera):
             cv2.imwrite(file_path, image)
             # without the trailing comma the param is evaluated as input sequence not tuple
             try:
-                res = self.db_con.execute("INSERT into images(file, timestamp, flight_id) values(?, ?, ?)", (file_path, time.time()*1e3, settings.flight_number))
+                res = self.db_con.execute("INSERT into images(file, timestamp, flight_id) values(?, ?, ?)", (
+                    file_path, time.time()*1e3, settings.flight_number))
                 image_id = res.lastrowid
                 for obj in obj_info:
                     self.db_con.execute("INSERT into objects(name, score, image_id) values(?,?,?)",
-                    (obj["name"], obj["score"], image_id))
+                                        (obj["name"], obj["score"], image_id))
                 self.db_con.commit()
             except Exception as e:
                 print("failed save due to lock" + str(e))
             # self.socket.emit("img", file_path)
-            self.socket.emit("img", {"aruco": aruco_info, "obj": obj_info, "file_path": file_path})
+            self.socket.emit(
+                "img", {"aruco": aruco_info, "obj": obj_info, "file_path": file_path})
             self.last_time = time.time()
 
         return image
@@ -105,6 +105,9 @@ class RecordingCam(VideoCamera):
     def __del__(self):
         self.output.release()
         return super().__del__()
+
+
+
 
 
 class RecordingThread(Thread):
@@ -140,7 +143,7 @@ class RecordingThread(Thread):
 
 
 class SensorThread(Thread):
-    def __init__(self, socket: SocketIO, db,interval=5):
+    def __init__(self, socket: SocketIO, db, interval=5):
         Thread.__init__(self)
         self.counter = 0
         self.socket = socket
