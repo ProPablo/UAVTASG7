@@ -199,7 +199,7 @@ class SensorThread(Thread):
                        "Gas_Oxidising": oxidising}
             # self.socket.emit("sensor", payload)
             job = db_queue.Job(sql_create, "sensor", payload)
-
+            db_queue.q.put(job)
             # Check to see what to display on the LCD Screen
             if(self.lcd_mode == 2):
                 # Display Vid on LCD
