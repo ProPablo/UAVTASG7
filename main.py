@@ -221,7 +221,7 @@ if __name__ == '__main__':
     if (is_production):
         print("On Pi" + str(is_production))
 
-    s_thread = SensorThread(socketio)
+    s_thread = SensorThread()
     # This kills the thread when proc finished otherwise would have to call join()
     s_thread.daemon = True
     s_thread.start()

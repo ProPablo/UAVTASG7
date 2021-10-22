@@ -41,6 +41,13 @@
       display: none;
     }
 
+    .popover-placeholder {
+      display: none;
+    }
+    .detected-placeholder {
+      display: none;
+    }
+
     .table-condensed {
       font-size: 10px;
       margin-bottom: 0 !important;
@@ -98,6 +105,15 @@
 </head>
 
 <body>
+  <div class="popover-placeholder">
+    <h6 class="fw-bold">Detected:</h6>
+    <ul>
+      <li>
+
+      </li>
+
+    </ul>
+  </div>
 
 
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -150,8 +166,8 @@
   <!-- cols is out of 12 -->
   <ul id="hist-img-container" class="list-group list-group-flush col-2 position-absolute overflow-auto h-90">
     <li class="hist-img-placeholder list-group-item">
-      <img src="static/output/1634170119.jpg" tabindex="0" class="img-fluid" data-bs-toggle="popover"
-        title="Image" data-bs-content="test\n stuff">
+      <img src="static/output/1634170119.jpg" tabindex="0" class="img-fluid" data-bs-toggle="popover" title="Image">
+      <!-- data-bs-content="test\n stuff" -->
     </li>
   </ul>
 
@@ -195,52 +211,52 @@
         <div class="col-8 h-100" id="terminal"></div>
         <div class="col">
           <h5 class="fw-bold text-center">Sensor Logs</h5>
-            <table class="table table-bordered table-sm table-condensed">
-              <thead>
-                <tr>
-                  <th scope="col">Sensor</th>
-                  <th scope="col">Data</th>
-                  <th scope="col">Unit</th>
-                </tr>
-              </thead>
-              <tbody id="sensor-body">
-                <tr id="Temp">
-                  <th scope="row">Temperature</th>
-                  <td>Data</td>
-                  <td>C</td>
-                </tr>
-                <tr id = "Pressure">
-                  <th scope="row">Pressure</th>
-                  <td>Data</td>
-                  <td>hPa</td>
-                </tr>
-                <tr id = "Humidity">
-                  <th scope="row">Humidity</th>
-                  <td>Data</td>
-                  <td>%</td>
-                </tr>
-                <tr id = "Light">
-                  <th scope="row">Light</th>
-                  <td>Data</td>
-                  <td>Lux</td>
-                </tr>
-                <tr id = "Gas_Reducing">
-                  <th scope="row">Gas Reducing</th>
-                  <td>Data</td>
-                  <td>kO</td>
-                </tr>
-                <tr id = "Gas_nh3">
-                  <th scope="row">Gas NH3</th>
-                  <td>Data</td>
-                  <td>kO</td>
-                </tr>
-                <tr id = "Gas_Oxidising">
-                  <th scope="row">Gas Oxidising</th>
-                  <td>Data</td>
-                  <td>kO</td>
-                </tr>
-              </tbody>
-            </table>
+          <table class="table table-bordered table-sm table-condensed">
+            <thead>
+              <tr>
+                <th scope="col">Sensor</th>
+                <th scope="col">Data</th>
+                <th scope="col">Unit</th>
+              </tr>
+            </thead>
+            <tbody id="sensor-body">
+              <tr id="Temp">
+                <th scope="row">Temperature</th>
+                <td>Data</td>
+                <td>C</td>
+              </tr>
+              <tr id="Pressure">
+                <th scope="row">Pressure</th>
+                <td>Data</td>
+                <td>hPa</td>
+              </tr>
+              <tr id="Humidity">
+                <th scope="row">Humidity</th>
+                <td>Data</td>
+                <td>%</td>
+              </tr>
+              <tr id="Light">
+                <th scope="row">Light</th>
+                <td>Data</td>
+                <td>Lux</td>
+              </tr>
+              <tr id="Gas_Reducing">
+                <th scope="row">Gas Reducing</th>
+                <td>Data</td>
+                <td>kO</td>
+              </tr>
+              <tr id="Gas_nh3">
+                <th scope="row">Gas NH3</th>
+                <td>Data</td>
+                <td>kO</td>
+              </tr>
+              <tr id="Gas_Oxidising">
+                <th scope="row">Gas Oxidising</th>
+                <td>Data</td>
+                <td>kO</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

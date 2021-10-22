@@ -151,7 +151,7 @@ cpu_temps = [get_cpu_temperature()] * 5
 
 class SensorThread(Thread):
 
-    def __init__(self, socket: SocketIO, interval=5,):
+    def __init__(self, interval=5,):
         Thread.__init__(self)
         self.socket = socket
         self.interval = interval
