@@ -32,6 +32,7 @@ class QueueWorker(threading.Thread):
                 print(e)
             self.sock.emit(item.name, item.data)
             q.task_done()
+            print(f"Job done: {item.name}")
 
 def worker():
     while True:

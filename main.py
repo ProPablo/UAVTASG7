@@ -18,6 +18,7 @@ from flask_socketio import SocketIO, send, emit
 import sqlite3
 from settings import DB_NAME
 import settings
+import db_queue
 
 is_production = platform.system() == 'Linux'
 # is_production = True
@@ -224,6 +225,9 @@ if __name__ == '__main__':
     # This kills the thread when proc finished otherwise would have to call join()
     s_thread.daemon = True
     s_thread.start()
+    db_thread =  db_queue.QueueWorker(con, socketio)
+    db_thread.daemon = True
+    db_thread.start()
     # socketio.start_background_task(target=thing)
 
     socketio.run(app, host='0.0.0.0', debug=not is_production)
