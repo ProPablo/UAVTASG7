@@ -31,7 +31,7 @@ MODEL_NAME = os.path.join('object_detection', "coco_ssd_mobilenet_v1")
 # print(model_path_joined)
 GRAPH_NAME = 'detect.tflite'
 LABELMAP_NAME = 'labelmap.txt'
-min_conf_threshold = float(0.5)
+min_conf_threshold = float(0.55)
 # resW, resH = args.resolution.split('x')
 # imW, imH = int(resW), int(resH)
 use_TPU = False
