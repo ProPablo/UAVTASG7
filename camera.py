@@ -36,9 +36,8 @@ class VideoCamera(object):
 
 
 class WebVisCamera(VideoCamera):
-    def __init__(self, socket: SocketIO, db: Connection, image_interval=5):
-        self.socket = socket
-        self.db_con = db
+    def __init__(self,image_interval=5):
+        # self.socket = socket
         # self.db_con = connect(DB_NAME)
         self.last_time = 0
         self.image_interval = image_interval

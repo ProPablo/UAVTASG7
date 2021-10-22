@@ -139,7 +139,7 @@ def web_vis_feed():
     # if (is_web_vis):
     #   return "no can do"
     is_web_vis = True
-    return Response(gen(WebVisCamera(socket=socketio, db=con)),
+    return Response(gen(WebVisCamera()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
@@ -221,7 +221,7 @@ if __name__ == '__main__':
     if (is_production):
         print("On Pi" + str(is_production))
 
-    s_thread = SensorThread(socketio, con)
+    s_thread = SensorThread(socketio)
     # This kills the thread when proc finished otherwise would have to call join()
     s_thread.daemon = True
     s_thread.start()
