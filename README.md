@@ -8,7 +8,10 @@ From https://github.com/pimoroni/enviroplus-python run the installation command
   sudo apt-get install libcblas-dev
   pip3 install -u numpy
   pip3 install flask-socketio
-  
+  //Sqlite things:
+  .mode columns
+  .headers on
+
 
 ```
 

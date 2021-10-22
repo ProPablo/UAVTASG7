@@ -151,7 +151,7 @@
   <ul id="hist-img-container" class="list-group list-group-flush col-2 position-absolute overflow-auto h-90">
     <li class="hist-img-placeholder list-group-item">
       <img src="static/output/1634170119.jpg" tabindex="0" class="img-fluid" data-bs-toggle="popover"
-        title="Popover title" data-bs-content="And here's some amazing content. It's very engaging. Right?">
+        title="Image" data-bs-content="test\n stuff">
     </li>
   </ul>
 
@@ -162,7 +162,7 @@
         <div class="col border border-primary">
           <h6 class="fw-bold text-center">Live Feed</h6>
           <img id="video" class="d-block mx-auto img-fluid" src="{{ url_for('web_vis_feed') }}" />
-          <p class="lead mb-4">Currently Detected: </p>
+          <!-- <p id="detected" class="lead mb-4">Currently Detected: </p> -->
         </div>
         <div class="col border border-primary">
           <div class="h-10">
@@ -452,7 +452,10 @@
       });
 
       img.attr("src", uri);
-      $("#hist-img-container").animate({ scrollTop: clonedHolder.offset().top }, 500);
+      // title="Image" data-bs-content
+      img.attr("title", `Image: ${data.timestamp}`)
+      // img.attr("data-bs-content", )
+      $("#hist-img-container").animate({ scrollTop: clonedHolder.position().top }, 500);
 
       const objs = [...data.obj.map((o) => o.name), ...data.aruco.map(a => `aruco ${a}`)]
       sayObjects(objs);
