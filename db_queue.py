@@ -16,6 +16,7 @@ q = queue.Queue()
 
 class QueueWorker(threading.Thread):
     def __init__(self, db_con:Connection, socket: SocketIO) -> None:
+        threading.Thread.__init__(self)
         self.con = db_con
         self.sock = socket
     
