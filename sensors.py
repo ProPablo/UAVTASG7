@@ -157,7 +157,6 @@ class SensorThread(Thread):
         self.interval = interval
         self.lcd_mode = 0
         self.db_conn = db
-        self.flight_id = settings.flight_number
 
     def run(self):
         global cpu_temps
@@ -229,7 +228,7 @@ def sql_create(self, con):
         VALUES(?,?,?,?,?,?,?,?,?)"""
 
     sql_vals = (self.data["timestamp"], self.data["Temp"], self.data["Pressure"], self.data["Humidity"],
-                self.data["Light"], self.data["Gas_Reducing"], self.data["Gas_nh3"], self.data["Gas_Oxidising"], settings.flight_id)
+                self.data["Light"], self.data["Gas_Reducing"], self.data["Gas_nh3"], self.data["Gas_Oxidising"], settings.flight_number)
     try:
         con.execute(sql, sql_vals)
         con.commit()
