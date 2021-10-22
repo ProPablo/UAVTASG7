@@ -44,6 +44,7 @@
     .popover-placeholder {
       display: none;
     }
+
     .detected-placeholder {
       display: none;
     }
@@ -107,8 +108,8 @@
 <body>
   <div class="popover-placeholder">
     <h6 class="fw-bold">Detected:</h6>
-    <ul>
-      <li>
+    <ul class="list-group">
+      <li class="list-group-item detected-placeholder">
 
       </li>
 
@@ -125,7 +126,7 @@
           <a class="nav-link active" aria-current="page" href="#">Home</a>
         </li>
         <li class="nav-item">
-          <a href="{{ url_for('recording') }}" class="nav-link">Archive</a>
+          <a href="{{ url_for('archive') }}" class="nav-link">Archive</a>
         </li>
         <li class="nav-item">
           <a href="{{ url_for('recording') }}" class="nav-link">Recording</a>
@@ -461,17 +462,34 @@
     socket.on('img', (data) => {
       const uri = data.file_path;
       term.write(`image_event:${JSON.stringify(data)}\r\n`);
-      const clonedHolder = $(".hist-img-placeholder").clone().appendTo("#hist-img-container").removeClass("hist-img-placeholder")
+      const clonedHolder = $(".hist-img-placeholder").clone().prependTo("#hist-img-container").removeClass("hist-img-placeholder")
+      // const clonedHolder = $(".hist-img-placeholder").clone().appendTo("#hist-img-container").removeClass("hist-img-placeholder");
+      // const popoverClone = $(".popover-placeholder").clone().removeClass("popover-placeholder")
+      // popoverClone.append($('.detected-placeholder').clone().removeClass('detected-placeholder').text("Thing1"))
+
       const img = clonedHolder.find('img');
+      let detectedString = `Detected: `
+      data.obj.forEach((a)=> {
+        detectedString += ` obj(${a.name}, ${a.score}),`
+      })
+      
+      data.aruco.forEach((a)=> {
+        detectedString += ` aruco(${a}),`
+      })
+
+      const title = `Image: ${new Date(data.timestamp).toLocaleTimeString()}`;
       var popover = new bootstrap.Popover(img, {
-        trigger: 'focus'
+        trigger: 'focus',
+        // title,
+        content: detectedString
       });
 
       img.attr("src", uri);
+      img.attr("data-original-title", title);
       // title="Image" data-bs-content
-      img.attr("title", `Image: ${data.timestamp}`)
+      // img.attr("title", `Image: ${data.timestamp}`)
       // img.attr("data-bs-content", )
-      $("#hist-img-container").animate({ scrollTop: clonedHolder.position().top }, 500);
+      // $("#hist-img-container").animate({ scrollTop: img.offset().top }, 500);
 
       const objs = [...data.obj.map((o) => o.name), ...data.aruco.map(a => `aruco ${a}`)]
       sayObjects(objs);

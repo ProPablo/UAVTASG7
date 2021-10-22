@@ -144,11 +144,11 @@ class RecordingThread(Thread):
 
 
 class SensorThread(Thread):
-    def __init__(self, socket: SocketIO, db, interval=5):
+    def __init__(self, interval=5):
         Thread.__init__(self)
         self.counter = 0
-        self.socket = socket
-        self.db_conn = db
+        # self.socket = socket
+        # self.db_conn = db
         self.interval = interval
 
     def run(self):
@@ -160,6 +160,7 @@ class SensorThread(Thread):
             # this blocks other threads completely
             # sql = """INSERT INTO Sensor_Data(timestamp) values(?)"""
             # self.db_conn.execute(sql, (time.time(),))
-            self.socket.emit(
-                "testdata", {"timestamp": time.time()*1e3, "counter": self.counter, "data": random.random()})
+            # self.socket.emit(
+            #     "testdata", {"timestamp": time.time()*1e3, "counter": self.counter, "data": random.random()})
+            
             time.sleep(self.interval)

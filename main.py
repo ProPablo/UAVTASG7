@@ -113,6 +113,17 @@ def recording():
 def recording_panel():
     return render_template('settings.html')
 
+@app.route('/archive')
+def archive():
+    data = con.execute('SELECT * from images')
+    data = data.fetchall()
+    # results = []
+    # for im in data:
+    #     image_obj = {"id": im[0]}
+
+    #     results.append(image_obj)
+    return render_template('archive.html', results=data) 
+    
 
 def gen(camera):
     while True:
