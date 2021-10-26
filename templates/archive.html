@@ -1,31 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- bootstrap imports -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj"
-    crossorigin="anonymous"></script>
-  <title>Archive</title>
-</head>
+{% block content %}
+<ul class="images-list list-group list-group-flush">
+  {% for result in results %}
+  <li class="list-group-item">
+    <img src="{{ result.file_path }}" tabindex="0" class="img-fluid" data-bs-toggle="popover"
+      title="{{ result.timestamp }}" data-bs-content=' 
+      <div class="">
+        <h6 class="fw-bold">Detected:</h6>
+        <ul class="list-group">
+        {% for obj in result.obj %}
+          <li class="list-group-item">
+          {{ obj.name }} ({{obj.score}})
+          </li>
+        {% endfor %}
+        </ul>
+      </div>
+      '>
+  </li>
 
-<body>
-  <ul class="list-group">
-    {% for result in results %}
-    <!-- <tr>
-          <td></td>
-          <td>{{ result[1] }}</td>
-          <td>{{ result[2] }}</td>
-      </tr> -->
-    <li class="list-group-item">{{ result[0] }}</li>
-    {% endfor %}
+  <!-- <li class="list-group-item">{{ result[0] }}</li> -->
+  {% endfor %}
 
-  </ul>
-</body>
+</ul>
 
-</html>
+<script>
+  $('ul.images-list').children('li').each((i, el)=> {
+    const img = $(el).find('img');
+    
+    let title = Number.parseFloat(img.attr("title"));
+    title = `Image: ${new Date(title).toString()}`;
+    img.attr("title", title);
+    var popover = new bootstrap.Popover(img, {
+        html: true,
+        trigger: 'focus',
+        content: img.attr("data-bs-content") 
+      });
+  })
+
+</script>
+
+{% endblock %}

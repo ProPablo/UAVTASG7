@@ -110,12 +110,9 @@
     <h6 class="fw-bold">Detected:</h6>
     <ul class="list-group">
       <li class="list-group-item detected-placeholder">
-
       </li>
-
     </ul>
   </div>
-
 
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
@@ -264,10 +261,8 @@
 
 
   </div>
-  <script>
-
-
-
+  <script type="module">
+    // import {} from './static/helper.js'
     var chartColours = {
       'Temp': '#390099',
       'Pressure': '#6C0079',
@@ -462,30 +457,34 @@
     socket.on('img', (data) => {
       const uri = data.file_path;
       term.write(`image_event:${JSON.stringify(data)}\r\n`);
+      
       const clonedHolder = $(".hist-img-placeholder").clone().prependTo("#hist-img-container").removeClass("hist-img-placeholder")
       // const clonedHolder = $(".hist-img-placeholder").clone().appendTo("#hist-img-container").removeClass("hist-img-placeholder");
-      // const popoverClone = $(".popover-placeholder").clone().removeClass("popover-placeholder")
-      // popoverClone.append($('.detected-placeholder').clone().removeClass('detected-placeholder').text("Thing1"))
-
+      
       const img = clonedHolder.find('img');
+      const popoverClone = $(".popover-placeholder").clone().removeClass("popover-placeholder")
+      
       let detectedString = `Detected: `
       data.obj.forEach((a)=> {
         detectedString += ` obj(${a.name}, ${a.score}),`
+        popoverClone.append($('.detected-placeholder').clone().removeClass('detected-placeholder').text(`${a.name}, ${a.score}`))
       })
-      
       data.aruco.forEach((a)=> {
         detectedString += ` aruco(${a}),`
+        popoverClone.append($('.detected-placeholder').clone().removeClass('detected-placeholder').text(`Aruco(${a})`))
       })
-
-      const title = `Image: ${new Date(data.timestamp).toLocaleTimeString()}`;
+      
+      const title = `Image: ${new Date(data.timestamp).toString()}`;
+      img.attr("title", title);
+      
       var popover = new bootstrap.Popover(img, {
+        html: true,
         trigger: 'focus',
-        // title,
-        content: detectedString
+        content: popoverClone.html()
       });
 
       img.attr("src", uri);
-      img.attr("data-original-title", title);
+      // img.attr("data-original-title", title);
       // title="Image" data-bs-content
       // img.attr("title", `Image: ${data.timestamp}`)
       // img.attr("data-bs-content", )

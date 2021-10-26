@@ -46,7 +46,7 @@ con = sqlite3.connect(DB_NAME, check_same_thread=False)
 
 is_recording = False
 is_web_vis = False
-lcd_mode = 0 # 0= ip, 1= sensor, 2=live_feed
+lcd_mode = 0  # 0= ip, 1= sensor, 2=live_feed
 output_file = "output/cam_video.mp4"
 recording_thread = None
 
@@ -109,21 +109,40 @@ def index():
 def recording():
     return render_template('recording.html')
 
-@app.route('/settings')
-def recording_panel():
-    return render_template('settings.html')
+
+@app.route('/settings_panel')
+def settings_panel():
+    return render_template('settings.html', lcd_mode=lcd_mode)
+
 
 @app.route('/archive')
 def archive():
-    data = con.execute('SELECT * from images')
+    data = con.execute('''SELECT 
+    images.id, 
+    images.file, 
+    images.timestamp,
+    objects.id,
+    objects.name,
+    objects.score
+    from images LEFT JOIN objects ON images.id = objects.image_id''')
     data = data.fetchall()
+    index = {}
+    results = []
+    for im in data:
+        print(im)
+        id = im[0]
+        if (not id in index):
+            new_obj = {"id": im[0], "file_path": im[1], "timestamp": im[2], "obj": [], "aruco": []}
+            index[id] = new_obj
+            results.append(new_obj)
+        image_obj = index[id]
+        if (im[3] != None):
+            image_obj["obj"].append({"id": im[3], "name": im[4], "score": im[5]})
+            
     # results = []
-    # for im in data:
-    #     image_obj = {"id": im[0]}
-
     #     results.append(image_obj)
-    return render_template('archive.html', results=data) 
-    
+    return render_template('archive.html', results=results, lcd_mode=lcd_mode)
+
 
 def gen(camera):
     while True:
@@ -205,6 +224,7 @@ def clean_output():
             os.unlink(file_path)
     return 'done'
 
+
 @app.route('/set_lcd_mode/<int:mode>')
 def set_lcd_mode(mode):
     print("changing mode " + str(mode))
@@ -212,6 +232,7 @@ def set_lcd_mode(mode):
     lcd_mode = mode
     s_thread.lcd_mode = mode
     return "done"
+
 
 @app.route('/ping')
 def ping():
@@ -223,12 +244,13 @@ def ping():
 #     socketio.emit("event", {"time": time.time()})
 #     socketio.sleep(0.2)
 
+
 if __name__ == '__main__':
     # clean_output()
     # app.run(host='0.0.0.0', debug=True)
     init_db()
     settings.start_flight(con)
-    
+
     if (is_production):
         print("On Pi" + str(is_production))
 
@@ -236,7 +258,7 @@ if __name__ == '__main__':
     # This kills the thread when proc finished otherwise would have to call join()
     s_thread.daemon = True
     s_thread.start()
-    db_thread =  db_queue.QueueWorker(con, socketio)
+    db_thread = db_queue.QueueWorker(con, socketio)
     db_thread.daemon = True
     db_thread.start()
     # socketio.start_background_task(target=thing)

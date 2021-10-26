@@ -108,9 +108,6 @@ class RecordingCam(VideoCamera):
         return super().__del__()
 
 
-
-
-
 class RecordingThread(Thread):
     def __init__(self, filename):
         Thread.__init__(self)
