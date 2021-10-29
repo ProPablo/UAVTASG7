@@ -117,7 +117,7 @@ def settings_panel():
 
 @app.route('/archive')
 def archive():
-    data = con.execute('''SELECT 
+    image_data = con.execute('''SELECT 
     images.id, 
     images.file, 
     images.timestamp,
@@ -125,10 +125,12 @@ def archive():
     objects.name,
     objects.score
     from images LEFT JOIN objects ON images.id = objects.image_id''')
-    data = data.fetchall()
+    image_data = image_data.fetchall()
     index = {}
     results = []
-    for im in data:
+    
+    aruco_data = con.execute()
+    for im in image_data:
         print(im)
         id = im[0]
         if (not id in index):

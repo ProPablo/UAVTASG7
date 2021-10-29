@@ -1,0 +1,493 @@
+    1  sudo swapon -show
+    2  sudo fallocate -1 3G /swapfile
+    3  sudo chmod 600 /swapfile
+    4  sudo mkswap /swapfile
+    5  sudo swapon /swapfile
+    6  sudo nano /etc/fstab
+    7  sudo swapon -show
+    8  sudo nano /etc/fstab
+    9  sudo fallocate -1 3g /swapfile
+   10  sudo fallocate -l 3G /swapfile
+   11  sudo chmod 600 /swapfile
+   12  sudo mkswap /swapfile
+   13  sudo swapon /swapfile
+   14  sudo nano /etc/fstab
+   15  sudo swapon -shpow
+   16  sudo apt install net-tools
+   17  ifconfig
+   18  sudo apt install openssh-server
+   19  sudo apt install python3-pip
+   20  pip3 -version
+   21  sudo apt install python 3-pip pip3 -version
+   22  sudo pip3 install git+https://github.com/waveform80/picamera
+   23  raspistill -o image.jpg -w 640 -h 480
+   24  sudo apt install libopencv-dev python3-opencv
+   25  sudo apt install -y vlc
+   26  sudo apt-get update
+   27  sudo ap-get dist-upgrade
+   28  sudo apt-get dist-upgrade
+   29  pip3 install tensorflow
+   30  sudo apt-get isntall libat-base-dev
+   31  sudo apt-get install libat-base-dev
+   32  sudo apt-get install libatlas-base-dev
+   33  sudo pip3 install pillow lxml jupyter matplotlib cython
+   34  sudo apt-get install python-tk
+   35  sudo apt-get install libjpeg-dev libtiff5-dev libjasper-dev libpng12-dev
+   36  sudo apt-get install libavcodec-dev libavformat-dev libswscale-dev libv41-dev
+   37  sudo apt-get install libavcodec-dev libavformat-dev libswscale-dev libv4l-dev
+   38  sudo apt-get install libxvidcore-dev libx264-dev
+   39  sudo apt-get install qt4-dev-tools libatlas-base-dev
+   40  sudo pip3 install opencv-python
+   41  sudo apt-get install protobuf-compiler
+   42  protoc --version
+   43  mkdir tensorflow1
+   44  cd tensorflow1
+   45  git clone --depth 1 https://github.com/tensorflow1/models.git
+   46  git clone --depth 1 https://github.com/tensorflow/models.git
+   47  sudo nano ~/.bashrc
+   48  cd /home/pi/tensorflow1/models/research
+   49  protoc object_detection/protos/*.proto --python_out=.
+   50  cd /home/pi/tensorflow1/models/research/object_detection
+   51  wget http://download.tensorflow.org/models/object_detection/ssdlite_mobilenet_v2_coco_2018_05_09.tar.gz
+   52  tar -xzvf ssdlite_mobilenet_v2_coco_2018_05_09.tar.gz
+   53  wget https://raw.githubusercontent.com/EdjeElectronics/TensorFlow-Object-Detection-on-the-Raspberry-Pi/master/Object_detection_picamera.py
+   54  python3 Object_detection_picamera.py 
+   55  cd /home/pi/tensorflow1/models/research/object_detection
+   56  python3 Object_detection_picamera.py 
+   57  wget https://raw.githubusercontent.com/EdjeElectronics/TensorFlow-Object-Detection-on-the-Raspberry-Pi/master/Object_detection_picamera.py
+   58  python3 Object_detection_picamera.py 
+   59  wget http://download.tensorflow.org/models/object_detection/ssdlite_mobilenet_v2_coco_2018_05_09.tar.gz
+   60  tar -xzvf ssdlite_mobilenet_v2_coco_2018_05_09.tar.gz
+   61  wget http://download.tensorflow.org/models/object_detection/ssdlite_mobilenet_v2_coco_2018_05_09.tar.gz
+   62  python3 Object_detection_picamera.py 
+   63  git clone --depth 1 https://github.com/tensorflow/models.git
+   64  cd
+   65  git clone --depth 1 https://github.com/tensorflow/models.git
+   66  sudo apt-get update
+   67  sudo apt-get dist-upgrade
+   68  pip3 install tensorflow
+   69  sudo apt-get install libatlas-base-dev
+   70  sudo pip3 install pillow lxml jupyter matplotlib cython
+   71  sudo apt-get install python-tk
+   72  sudo apt-get install libjpeg-dev libtiff5-dev libjasper-dev libpng12-dev
+   73  sudo apt-get install libavcodec-dev libavformat-dev libswscale-dev libv4l-dev
+   74  sudo apt-get install libxvidcore-dev libx264-dev
+   75  sudo apt-get install qt4-dev-tools libatlas-base-dev
+   76  sudo pip3 install opencv-python
+   77  protoc --version
+   78  mkdir tensorflow1
+   79  cd tensorflow1
+   80  git clone --depth 1 https://github.com/tensorflow/models.git
+   81  sudo nano ~/.bashrc
+   82  cd /home/pi/tensorflow1/models/research
+   83  protoc object_detection/protos/*.proto --python_out=.
+   84  cd /home/pi/tensorflow1/models/research/object_detection
+   85  wget http://download.tensorflow.org/models/object_detection/ssdlite_mobilenet_v2_coco_2018_05_09.tar.gz
+   86  tar -xzvf ssdlite_mobilenet_v2_coco_2018_05_09.tar.gz
+   87  wget https://raw.githubusercontent.com/EdjeElectronics/TensorFlow-Object-Detection-on-the-Raspberry-Pi/master/Object_detection_picamera.py
+   88  python3 Object_detection_picamera.py 
+   89  pip install numpy --upgrade
+   90  python3 Object_detection_picamera.py 
+   91  pip install numpy==1.8
+   92  python3 Object_detection_picamera.py 
+   93  ipconfig
+   94  ifconfig
+   95  cd ~/Projects/Python/tflite
+   96  source tflite-env/bin/activate
+   97  cd object_detection
+   98  python TFLite_detection_webcam.py --modeldir=coco_ssd_mobilenet_v1
+   99  sudo shutdown -now
+  100  sudo shutdown -h now
+  101  cd ~/Projects/Python/tflite
+  102  source tflite-env/bin/activate
+  103  cd object_detection
+  104  python TFLite_detection_webcam.py --modeldir=coco_ssd_mobilenet_v1
+  105  source tflite-env/bin/deactivate
+  106  cd
+  107  cd /home/pi/tensorflow1/models/research/object_detection
+  108  python3 Object_detection_picamera.py 
+  109  cd
+  110  sudo shutdown -h now
+  111  pip install virtualenv
+  112  virtualenv Videorecognition
+  113  source Videorecognition/bin/activate
+  114  sudo apt-get upgrade
+  115  sudo apt install python3-opencv
+  116  pip install Flask
+  117  cd Videorecognition/VideoStreaming
+  118  python main.py
+  119  cd
+  120  git clone https://github.com/BrennanFairfull/Cascade-Helper.git
+  121  cd helper_scripts
+  122  cd Cascade-Helper/helper_scripts/
+  123  cd Cascade-Helper
+  124  cd helper_scripts
+  125  python create_bg_file.py ../neg
+  126  cd
+  127  conda update anaconda-navigator
+  128  pip install opencv-python
+  129  cd Cascade-Helper/helper_scripts/
+  130  python create_bg_file.py ../neg
+  131  cd
+  132  cd Videorecognition/VideoStreaming
+  133  python main.py
+  134  cd
+  135  cd Cascade-Helper/helper_scripts/
+  136  python rescaler.py ../MDG9.png
+  137  python grayScaler.py ..MDG9resize.jpg
+  138  cd
+  139  sudo reboot
+  140  cd Cascade-Helper/helper_scripts/
+  141  python grayScaler.py ..MDG9resize.jpg
+  142  pip install numpy --upgrade
+  143  python grayScaler.py ..MDG9resize.jpg
+  144  python grayScaler.py ../MDG9resize.jpg
+  145  python rescaler.py ../MDG9.png
+  146  python grayScaler.py ../MDG9resize.png
+  147  python grayScaler.py ../MDG9resize.jpg
+  148  python grayScaler.py ../MDG9resized.jpg
+  149  python rescaler.py ../MDG9.png
+  150  git clone https://github.com/BrennanFairfull/Cascade-Helper.git
+  151  python create_bg_file.py ../neg
+  152  python rescaler.py ../MDG9.png
+  153  cd
+  154  git clone https://github.com/BrennanFairfull/Cascade-Helper.git
+  155  cd Cascade-Helper/helper_scripts
+  156  python create_bg_file.py ../neg
+  157  python rescaler.py ../MDG9.png
+  158  python grayScaler.py ../MDG9resized.jpg
+  159  cd
+  160  cd ~/Projects/Python/tflite
+  161  source tflite-env/bin/activate
+  162  cd object_detection
+  163  python TFLite_detection_webcam.py --modeldir=coco_ssd_mobilenet_v1
+  164  cd
+  165  cd Cascade-Helper
+  166  mkdir pos
+  167  opencv_createsamples -img MDG9resizedgray.jpg -bg bg.txt -info pos/info.lst -pngoutput pos -maxxangle 0.3 -maxyangle 0.3 -maxzangle 0.3 -bgcolor 150 -bgthresh 1 -num 200
+  168  cd
+  169  sudo apt install libopencv-dev python3-opencv
+  170  cd Cascade-Helper
+  171  opencv_createsamples -img MDG9resizedgray.jpg -bg bg.txt -info pos/info.lst -pngoutput pos -maxxangle 0.3 -maxyangle 0.3 -maxzangle 0.3 -bgcolor 150 -bgthresh 1 -num 200
+  172  opencv_createsamples -info pos/info.lst -num 200 -w 20 -h 20 -vec positives.vec
+  173  mkdir stages
+  174  opencv_traincascade -data stages -vec positives.vec -bg bg.txt -numPos 200 -numNeg 100 -numStages 3 -maxFalseAlarmRate 0.1 -w 20 -h 20
+  175  mkdir results
+  176  cd helper_scripts
+  177  python cascade_tester.py ../pos ../results ../stages/cascade.xml
+  178  cd
+  179  vim random.py
+  180  sudo apt install vim
+  181  vim random.py
+  182  python random.py 
+  183  vim random.py
+  184  python random.py 
+  185  sudo shutdown -h now
+  186  pip install numpy --upgrade install -q tflite_support
+  187  import os
+  188  import pathlib
+  189  # Clone the tensorflow models repository if it doesn't already exist
+  190  if "models" in pathlib.Path.cwd().parts:
+  191  elif not pathlib.Path('models').exists():
+  192  clear
+  193  sudo apt install -y libhdf5-dev libc-ares-dev libeigen3-dev gcc gfortran
+  194  python-dev libgfortran5 libatlas3-base libatlas-base-dev libopenblas-dev
+  195  sudo apt install -y libhdf5-dev libc-ares-dev libeigen3-dev gcc gfortran python-dev libgfortran5 libatlas3-base libatlas-base-dev libopenblas-dev libopenblas-base libblas-dev liblapack-dev cython libatlas-base-dev openmpi-bin libopenmpi-dev python3-dev
+  196  sudo pip3 install --upgrade setuptools pip
+  197  python3 -m pip install Pillow numpy pybind11 h5py imutils
+  198  python3 -m pip install keras_applications==1.0.8 --no-deps
+  199  python3 -m pip install keras_preprocessing==1.1.0 --no-deps
+  200  python3 -m pip install h5py==2.9.0
+  201  python3 -m pip install pybind11
+  202  python3 -m pip install Pillow numpy pybind11 h5py imutils
+  203  python3 -m pip install keras_applications==1.0.8 --no-deps
+  204  python3 -m pip install keras_preprocessing==1.1.0 --no-deps
+  205  python3 -m pip install h5py==2.9.0
+  206  python3 -m pip install pybind11
+  207  python3 -m pip install -U --user six wheel mock
+  208  python3 -m pip3 install -U --user six wheel mock
+  209  python3 -m pip install tensorflow
+  210  sudo reboot
+  211  sudo python3 import tensorflow
+  212  sudo python3
+  213  python3 -m pip install tensorflow
+  214  python3 -m pip3 install tensorflow
+  215  sudo python3
+  216  cd ~/Projects/Python/tflite
+  217  source tflite-env/bin/activate
+  218  cd object_detection
+  219  python TFLite_detection_webcam.py --modeldir=coco_ssd_mobilenet_v1
+  220  cd
+  221  python3 main.py
+  222  pip install flask
+  223  python3 main.py
+  224  pip3 install flask-socketio
+  225  python3 main.py
+  226  cd EGH455
+  227  mkdir Main
+  228  cd Main
+  229  wget https://github.com/ProPablo/UAVTASG7.git
+  230  git clone https://github.com/ProPablo/UAVTASG7.git
+  231  cd UAVTASG7
+  232  git clone https://github.com/ProPablo/UAVTASG7.git
+  233  cd
+  234  git clone https://github.com/ProPablo/UAVTASG7.git
+  235  cd UAVTASG7
+  236  git clone https://github.com/ProPablo/UAVTASG7.git
+  237  python3 main.py
+  238  mv object_detection/objdetect_funcs.py ./
+  239  python3 main.py
+  240  git pull
+  241  git stash
+  242  git pull
+  243  git reset --hard HEAD
+  244  git pull
+  245  cd
+  246  git clone https://github.com/ProPablo/UAVTASG7.git
+  247  cd UAVTASG7
+  248  python3 main.py
+  249  git pull
+  250  python3 main.py
+  251  git pull
+  252  python3 main.py
+  253  git pull
+  254  python3 main.py
+  255  git pull
+  256  python3 main.py
+  257  git pull
+  258  sudo shutdown
+  259  sudo shutdown -h now
+  260  cd UAVTASG7
+  261  git pull
+  262  python3 main.py
+  263  python3 -m pip install opencv-contrib-python
+  264  python3 main.py
+  265  git pull
+  266  curl -sSL https://get.pimoroni.com/enviroplus | bash
+  267  cd UAVTASG7
+  268  ls
+  269  sqlite3 UAV.db
+  270  sudo apt-get sqlite3
+  271  sudo apt-get install sqlite3
+  272  sqlite3 UAV.db
+  273  cd UAVTASG7/
+  274  python3 main.py --sensor
+  275  pkill python
+  276  sudo pkill python
+  277  python3 main.py --sensor
+  278  sudo nano /etc/rc.local
+  279  sudo reboot
+  280  sudo nano /etc/rc.local
+  281  sudo reboot
+  282  sudo nano /etc/rc.local
+  283  sudo reboot
+  284  sudo nano /etc/rc.local
+  285  sudo reboot
+  286  sudo su
+  287  cd UAVTASG7/
+  288  python main.py >> stuff
+  289  ls
+  290  cat stuff
+  291  sudo nano /etc/rc.local
+  292  rm stuff 
+  293  sudo reboot
+  294  cat UAVTASG7/stuff 
+  295  ps -aux 
+  296  pkill python
+  297  sudo nano /etc/rc.local
+  298  sudo reboot
+  299  sudo nano /etc/rc.local
+  300  sudo reboot
+  301  cd UAVTASG7/
+  302  ls
+  303  cat error 
+  304  python main.py
+  305  clear
+  306  sudo su pi -c 'cd /home/pi/UAVTASG7 && python main.py'
+  307  crontab -e
+  308  sudo nano /etc/rc.local
+  309  sudo reboot
+  310  ps -aux 
+  311  pkill python
+  312  sudo su pi -c 'cd /home/pi/UAVTASG7 && python main.py'
+  313  sudo su pit -c 'cd /home/pi/UAVTASG7 && python main.py'
+  314  sudo su pit -c 'cd /home/pi/UAVTASG7 && /usr/bin/python3 main.py'
+  315  sudo su pi -c 'cd /home/pi/UAVTASG7 && /usr/bin/python3 main.py'
+  316  sudo su pi -c 'cd /home/pi/UAVTASG7 && /usr/bin/python3 main.py --sensor'
+  317  sudo nano /etc/rc.local
+  318  crontab -e
+  319  pkill python
+  320  sudo reboot
+  321  ps -aux 
+  322  pkill python
+  323  sudo reboot
+  324  cd UAVTASG7
+  325  git pull
+  326  reboot
+  327  sudo reboot
+  328  cd UAVTASG7/
+  329  git stash
+  330  git pull
+  331  python3 main.py
+  332  pkill
+  333  pkill python
+  334  python3 main.py
+  335  git pull
+  336  python3 main.py
+  337  cd
+  338  clear
+  339  ls
+  340  cd pimoroni
+  341  cd Pimoroni/
+  342  cear
+  343  clear
+  344  ls
+  345  cd enviroplus
+  346  cd examples/
+  347  clear
+  348  ls
+  349  sudo i2cdetect -y 1
+  350  clear
+  351  cd
+  352  cd UAVTASG7/
+  353  python3 main.py --sensor
+  354  git pull
+  355  clear
+  356  python3 main.py --sensor
+  357  git stash
+  358  git pull
+  359  clear
+  360  ls
+  361  cd
+  362  cd Pimoroni/
+  363  cd enviroplus
+  364  cd examples/
+  365  ls
+  366  clear
+  367  ls
+  368  python3 gas.py
+  369  python3 all-in-one.py
+  370  python3 combined.py
+  371  git stash
+  372  clear
+  373  cd 
+  374  cd UAVTASG7/
+  375  git stasg
+  376  git stash
+  377  git pull
+  378  clear
+  379  python3 main.py --sensor
+  380  clear
+  381  python3 main.py --sensor
+  382  ckear
+  383  clear
+  384  python3 main.py
+  385  clear
+  386  python3 main.py --sensor
+  387  clear
+  388  python3 main.py --sensor
+  389  clear
+  390  cd
+  391  cd Pimoroni/
+  392  cd enviroplus
+  393  cd examples/
+  394  ls
+  395  python3 compensated-temperature.py
+  396  cd
+  397  python3 comp.py
+  398  ckear
+  399  clear
+  400  cd UAVTASG7/
+  401  python3 main.py --sensor
+  402  clear
+  403  git pull
+  404  python3 main.py --sensor
+  405  git pull
+  406  clear
+  407  python3 main.py --sensor
+  408  clear
+  409  python3 main.py --sensor
+  410  dc UAVTASG7/
+  411  cd UAVTASG7/
+  412  clera
+  413  clear
+  414  git pull
+  415  pkill python3
+  416  clear
+  417  python3 main.py
+  418  python3 main.py --sensor
+  419  git pull
+  420  clear
+  421  python3 main.py --sensor
+  422  ckear
+  423  clear
+  424  python3 main.py --sensor
+  425  clear
+  426  cd UAVTASG7/
+  427  git pull
+  428  clear
+  429  reboot
+  430  sudo reboot
+  431  cd UAVTASG7
+  432  git pull
+  433  sudo reboot
+  434  cd UAVTASG7
+  435  git pull
+  436  git stash
+  437  git pull
+  438  pkill python
+  439  python3 main.py
+  440  sudo shutdown -h now
+  441  sudo reboot
+  442  cd UAVTASG7/
+  443  python3 main.py 
+  444  git pull
+  445  python3 main.py 
+  446  python3 main.py --sensor
+  447  git pull
+  448  python3 main.py --sensor
+  449  ps -aux
+  450  pkill python
+  451  python3 main.py --sensor
+  452  git checkout main
+  453  git checkout master
+  454  git pull
+  455  python3 main.py --sensor
+  456  rm UAV.db 
+  457  python3 main.py --sensor
+  458  git checkout db_queue 
+  459  python3 main.py --sensor
+  460  git stash 
+  461  gi pul
+  462  git pull
+  463  python3 main.py --sensor
+  464  sqlite3 UAV.db 
+  465  python3 main.py --sensor
+  466  git pull
+  467  python3 main.py --sensor
+  468  pkill python
+  469  cd UAVTASG7/
+  470  git pull
+  471  git checkout db_queue 
+  472  git pul
+  473  git pull
+  474  python3 main.py 
+  475  git pull
+  476  python3 main.py 
+  477  git pull
+  478  python3 main.py 
+  479  vim sensors.py 
+  480  vim main.py 
+  481  git stash 
+  482  git pull
+  483  vim db_queue.py 
+  484  sudo reboot
+  485  pkill python
+  486  cd UAVTASG7/
+  487  git pull
+  488  python3 main.py --sensor
+  489  clear
+  490  pkill python
+  491  cd UAVTASG7/
+  492  python3 main.py --sensor
+  493  history > piHist
